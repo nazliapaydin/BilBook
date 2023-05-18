@@ -1,42 +1,46 @@
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 /**
  * A class that has some generic methods that may be useful for our project.
  * Author: Ata Uzay Kuzey
  */
 public class GenericMethods
 {
+    public final static Color GREAT_COLOR=new Color(0,204,204);
+    public final static ImageIcon FAVOURITE_STAR=fileToImage(new File("favourite.png"), 50);
+    public final static ImageIcon NOT_FAVOURITE_STAR=fileToImage(new File("not_favourite.png"), 50);
+    public final static ImageIcon THRASH_CAN=fileToImage(new File("remove.png"), 40);
+    public final static ImageIcon SOLD=fileToImage(new File("SOLD.png"),50);
+    
     private final static char[] CHARACTERS=new char[]
         {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
         'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
         '0','1','2','3','4','5','6','7','8','9','!','?'};
     
     private final static String[] INAPPROPRIATE_STRINGS=new String[]
-        {"fuck","dick","boob","tit","ass","cock","sex","porn","butt","wank","crap","shit","blowjob","boner","cunt","nigg","cum","hentai","cuck"};
+        {"fuck","dick","boob","tit","ass","cock","sex","porn","butt","wank","crap","shit","blowjob","boner","cunt","nigg","cum","hentai","cuck","bastard","whore","bitch","slut"};
     
     public final static Random rand=new Random();
 
     /**
-     * A method to sort an arraylist using the sort method from the Arrays class. It does not return the sorted arraylist,
-     * instead the arraylist is replaced with the sorted one.
+     * A shortcut to the sort method of the collections interface.
      * @param <T> class of the objects the arraylist contains.
      * @param arrayList arraylist to be sorted.
      */
-    @SuppressWarnings("unchecked")
     public static <T extends Comparable<T>> void sort(ArrayList<T> arrayList)
     {
-        if(arrayList==null)
-        {
-            throw new NullPointerException();
-        }
-        Object[] array=arrayList.toArray();
-        arrayList.removeAll(arrayList);
-        Arrays.sort(array);
-        for(int i=0;i<array.length;i++)
-        {
-            arrayList.add((T)array[i]);
-        }
+        Collections.sort(arrayList);
     }
 
      /**
@@ -82,6 +86,28 @@ public class GenericMethods
     }
 
     /**
+     * Creates a file chooser for the user to choose a file.
+     * @return the file chosen.
+     */
+    public static File chooseFile()
+    {
+        JFileChooser fileChooser=new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")+ File.separator + "Desktop"));
+        FileNameExtensionFilter filter=new FileNameExtensionFilter("Image", "png", "jpg", "jpeg");
+        fileChooser.setFileFilter(filter);
+        int result=fileChooser.showOpenDialog(null);
+        if (result==JFileChooser.APPROVE_OPTION) 
+        {
+            File file = fileChooser.getSelectedFile();
+            return file;
+        } 
+        else
+        {
+            return null;
+        }
+    }
+
+    /**
      * A method to copy the values of an arraylist onto a new arraylist.
      * @param <T> class of the objects the arraylist contains.
      * @param arrayList arraylist to be copied.
@@ -102,6 +128,55 @@ public class GenericMethods
     }
 
     /**
+     * Turns a file object into an imageicon using input streams.
+     * @param file file to be turned into the imageicon.
+     * @return the imageicon.
+     */
+    public static ImageIcon fileToImage(File file, int size)
+    {
+        ImageIcon icon=null;
+        try
+        {
+            FileInputStream stream = new FileInputStream(file);
+            byte[] imageData = new byte[(int) file.length()];
+            stream.read(imageData);
+            icon = new ImageIcon(imageData);
+            stream.close();
+            Image temp=icon.getImage();
+            if(icon.getIconWidth()>icon.getIconHeight())
+            {
+                temp=temp.getScaledInstance(size, size*icon.getIconHeight()/icon.getIconWidth(), Image.SCALE_SMOOTH);
+                BufferedImage image=new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+                Graphics g=image.getGraphics(); g.setColor(new Color(238,238,238));
+                g.fillRect(0, 0, size, size);
+                icon=new ImageIcon(temp);
+                icon.paintIcon(null, g, 0, (size-size*icon.getIconHeight()/icon.getIconWidth())/2);
+                icon=new ImageIcon(image);
+            }
+            else if(icon.getIconWidth()<icon.getIconHeight())
+            {
+                temp=temp.getScaledInstance(size*icon.getIconWidth()/icon.getIconHeight(), size, Image.SCALE_SMOOTH);
+                BufferedImage image=new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+                Graphics g=image.getGraphics(); g.setColor(new Color(238,238,238));
+                g.fillRect(0, 0, size, size);
+                icon=new ImageIcon(temp);
+                icon.paintIcon(null, g, (size-size*icon.getIconWidth()/icon.getIconHeight())/2, 0);
+                icon=new ImageIcon(image);
+            }
+            else
+            {
+                temp=temp.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+                icon=new ImageIcon(temp);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return icon;
+    }
+
+    /**
      * A method that calls the Date constructor.
      * @param day
      * @param month
@@ -112,6 +187,24 @@ public class GenericMethods
     public static Date createDate(int day, int month, int year)
     {
         return new Date(day,month,year);
+    }
+
+    /**
+     * A method that can create a date object from a string. The date object must either be in the form of "DD/MM/YYYY" or "YY B.C.", any other format
+     * will throw an exception.
+     * @param date string that reprents a date.
+     * @return the date object created.
+     */
+    public static Date createDate(String date)
+    {
+        if(date.contains("B"))
+        {
+            return new Date(1,1,-Integer.valueOf(date.substring(0, date.indexOf('B')-1)));
+        }
+        int day=Integer.valueOf(date.substring(0,date.indexOf('/')));
+        int month=Integer.valueOf(date.substring(1+date.indexOf('/', 0),date.indexOf('/',1+date.indexOf('/', 0))));
+        int year=Integer.valueOf(date.substring(1+date.indexOf('/',1+date.indexOf('/', 0))));
+        return createDate(day,month,year);
     }
 
     /**
@@ -137,7 +230,7 @@ public class GenericMethods
         {
             if(check.contains(INAPPROPRIATE_STRINGS[i]))
             {
-                if(i!=4||!check.contains("bass"))
+                if(i!=4||!(check.contains("bass")&&!isInappropriate(check.replaceAll("bass", ""))))
                 {
                     return INAPPROPRIATE_STRINGS[i];
                 }
@@ -175,6 +268,45 @@ public class GenericMethods
         while(isInappropriate(str));
 
         return str;
+    }
+
+    /**
+     * A method to test if a string appears in another string.
+     * @param target Big string thats gonna be tested.
+     * @param insideString Small string thats gonna be tested if it is in the first string.
+     * @return a double from 0 to 1, 1 means the string appears completely, 0 means it does not. Higher numbers means that the 1st string has a string more similar to 2nd string.
+     */
+    public static double stringSimilarity(String target, String insideString)
+    {
+        if(insideString.equals(""))
+        {
+            return 1;
+        }
+        if(insideString.length()>target.length())
+        {
+            return 0;
+        }
+        double maxRatio=0;
+        target=((target.toLowerCase()).replaceAll(" ", "")).replaceAll(":", "");
+        insideString=((insideString.toLowerCase()).replaceAll(" ", "")).replaceAll(":", "");
+
+        for(int i=0;i<target.length()-insideString.length()+1;i++)
+        {
+            double currentRatio=0;
+            for(int j=0;j<insideString.length();j++)
+            {
+                if(target.charAt(i+j)==insideString.charAt(j))
+                {
+                    currentRatio++;
+                }
+            }
+            currentRatio=currentRatio/insideString.length();
+            if(currentRatio>maxRatio)
+            {
+                maxRatio=currentRatio;
+            }
+        }
+        return maxRatio;
     }
 
     /**
@@ -225,7 +357,7 @@ public class GenericMethods
             {
                 return false;
             }
-            if(year==0||year>2023||year<-3400)
+            if(year==0||year>2025||year<-3400)
             {
                 return false;
             }
@@ -310,4 +442,5 @@ public class GenericMethods
             return date.day==day&&date.month==month&&date.year==year;
         }
     }
+
 }
