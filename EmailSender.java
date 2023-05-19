@@ -8,7 +8,8 @@ import javax.mail.internet.*;
  */
 public class EmailSender {
 
-   public static void sendVerificationCode(String recipientAdress, String verificationCode) {
+    // Send verification code 
+    public static void sendVerificationCode(String recipientAdress, String verificationCode) {
 
       // Recipient's email ID needs to be mentioned.
       String to = recipientAdress;
@@ -68,6 +69,7 @@ public class EmailSender {
       }
    }
 
+   // Custom email
    public static void sendNotification(String recipientAdress, String text) {
 
     // Recipient's email ID needs to be mentioned.
