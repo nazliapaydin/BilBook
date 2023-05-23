@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.LocalDate;
 /**
  * A class that has some generic methods that may be useful for our project.
  * Author: Ata Uzay Kuzey
@@ -117,7 +118,7 @@ public class GenericMethods
     {
         if(arrayList==null)
         {
-            throw new NullPointerException();
+            return null;
         }
         ArrayList<T> copy=new ArrayList<>();
         for(int i=0;i<arrayList.size();i++)
@@ -307,6 +308,19 @@ public class GenericMethods
             }
         }
         return maxRatio;
+    }
+
+    /**
+     * A method that creates a date object representing the date of the computer.
+     * @return a date object with the date of the computer.
+     */
+    public static Date getCurrentDate()
+    {
+        String date=LocalDate.now().toString();
+        int year=Integer.valueOf(date.substring(0,date.indexOf('-')));
+        int month=Integer.valueOf(date.substring(1+date.indexOf('-', 0),date.indexOf('-',1+date.indexOf('-', 0))));
+        int day=Integer.valueOf(date.substring(1+date.indexOf('-',1+date.indexOf('-', 0))));
+        return createDate(day, month, year);
     }
 
     /**
