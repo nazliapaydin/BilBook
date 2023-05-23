@@ -5,7 +5,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -33,6 +32,8 @@ public class Product implements Comparable<Product>
     private int ID;
     private boolean isBook;
     private boolean isSold;
+    private ArrayList<User> favouritedBy;
+    private String favouritedByArray;
 
     public static final int PRICE_ASCENDING=6;
     public static final int PRICE_DESCENDING=3;
@@ -68,6 +69,7 @@ public class Product implements Comparable<Product>
         this.isBook=isBook;
         this.isSold=isSold;
         this.description="";
+        this.favouritedBy=new ArrayList<>();
         if(image==null)
         {
             if(isBook)
@@ -98,7 +100,8 @@ public class Product implements Comparable<Product>
     {
         this.ID=ID;
         this.isBook=isBook;
-        this.onlinePrice=PriceScraping.priceScrape(name);
+        this.onlinePrice=isBook ? PriceScraping.priceScrape(name): 0;
+        this.favouritedBy=new ArrayList<>();
     }
 
     //setters and getters
@@ -138,6 +141,10 @@ public class Product implements Comparable<Product>
         this.dateUploaded = dateUploaded;
     }
 
+    public void setFavouritedByArray(String favouritedByArray) {
+        this.favouritedByArray = favouritedByArray;
+    }
+
     public void setUserID(int userID) {
         this.userID = userID;
     }
@@ -145,6 +152,26 @@ public class Product implements Comparable<Product>
     public void updateOnlinePrice()
     {
         this.onlinePrice=PriceScraping.priceScrape(name);
+    }
+
+    public void addFavouritedBy(User user)
+    {
+        if(!favouritedBy.contains(user))
+        {
+            favouritedBy.add(user);
+        }
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public ArrayList<User> getFavouritedBy() {
+        return GenericMethods.copyOf(favouritedBy);
+    }
+
+    public String getFavouritedByArray() {
+        return favouritedByArray;
     }
 
     public String getAuthor() {
@@ -231,14 +258,25 @@ public class Product implements Comparable<Product>
     }
 
     /**
+     * Sends an email notification to all the users who favourited this product.
+     */
+    public void notifyFavouritedUsers()
+    {
+        for(int i=0;i<favouritedBy.size();i++)
+        {
+            EmailSender.sendNotification(favouritedBy.get(i).getEmail(), "One of the items you favourited, "+name+", has changed.");
+        }
+    }
+
+    /**
      * A method to determine if a product will be shown according to the criteria given by the user.
      * @param showBooks true if books checkbox is ticked, false otherwise
      * @param showNotes true if notes checkbox is ticked, false otherwise
      * @param courseDepartment for the product to be shown, it must either be "ALL" or the department of the product
      * @param courseCode for the product to be shown, it must either be 0 or the code of the product, alternatively the department can be "ALL" or "OTHER"
      * @param searchBar the string from the search bar, for the product to be shown the similarity calculated by GenericMethods must be greater than 0.75
-     * @param showNotFavourites true if the Only favourites checkbox is ticked, false otherwise
-     * @param showSold true if the Only Show Available checkbox is ticked, false otherwise
+     * @param showOnlyFavourites true if the Only favourites checkbox is ticked, false otherwise
+     * @param dontShowSold true if the Only Show Available checkbox is ticked, false otherwise
      * @param loggedInUser the user who's currently logged in
      * @return true if all criteria is matched, false otherwise.
      */
@@ -260,7 +298,7 @@ public class Product implements Comparable<Product>
      * @param loggedInUser the object for the user that's currently logged in
      * @return 
      */
-    public JPanel createPanel(boolean isProfilePage, User loggedInUser)
+    public JPanel createPanel(boolean isProfilePage, User loggedInUser, BilBook bilBook)
     {
         if(this.user==null)
         {
@@ -303,7 +341,7 @@ public class Product implements Comparable<Product>
 
         if(!isProfilePage)
         {
-            JLabel profilePic=new JLabel(GenericMethods.fileToImage(user.getImageFile(), 140),SwingConstants.CENTER);
+            JLabel profilePic=new JLabel(GenericMethods.fileToImage(user.getImageFile(), 140));
             rightPanel.add(profilePic,BorderLayout.CENTER);
         }
 
@@ -369,11 +407,6 @@ public class Product implements Comparable<Product>
                 temp.remove(i);
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return name+"|"+author+"|"+dateUploaded+"|"+price;
     }
 
     @Override
