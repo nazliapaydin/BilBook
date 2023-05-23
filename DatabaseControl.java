@@ -1,4 +1,3 @@
-import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,9 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import java.util.Scanner;
 
 /**
  * A class that connects to the bilbook database and manipulates it. All methods are static so they can be used uniformly across all classes. 
@@ -24,6 +21,8 @@ public class DatabaseControl
 {
     private static Connection connection;
     private static Statement statement;
+    private static ArrayList<Product> products;
+    private static ArrayList<User> users;
 
     /**
      * Creates a connection and statement to the database. This method should be called before using any of the other methods.
@@ -33,6 +32,8 @@ public class DatabaseControl
         String url="jdbc:mysql://localhost:3306/BilBook";
         String userName="BilBook";
         String password="GjMrQiHBsM";
+        products=null;
+        users=null;
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection=DriverManager.getConnection(url, userName, password);
@@ -57,7 +58,7 @@ public class DatabaseControl
             fileInputStream.read(imageData);
             fileInputStream.close();
 
-            String sql = "INSERT INTO Products (Name, Author, DatePublished, DateUploaded, Price, CourseDepartment, CourseCode,Description ,UserID, IsBook, IsSold, Image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Products (Name, Author, DatePublished, DateUploaded, Price, CourseDepartment, CourseCode,Description ,UserID, IsBook, IsSold, Image, FavouritedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setString(2, product.getAuthor());
@@ -71,6 +72,7 @@ public class DatabaseControl
             preparedStatement.setBoolean(10, product.isBook());
             preparedStatement.setBoolean(11, product.isSold());
             preparedStatement.setBytes(12, imageData);
+            preparedStatement.setString(13, convertOperation(product.getFavouritedBy()));
             preparedStatement.executeUpdate();
             preparedStatement.close();
         }
@@ -81,12 +83,54 @@ public class DatabaseControl
     }
 
     /**
+     * A method that creates a string that consists of user ID's with spaces inbetween.
+     * @param users user arraylist
+     * @return a string with all the ID's of users. This output is readable by a Scanner.
+     */
+    private static String convertOperation(ArrayList<User> users)
+    {
+        String result="";
+        for(int i=0;i<users.size();i++)
+        {
+            result+=users.get(i).getID()+" ";
+        }
+
+        return result;
+    }
+
+    /**
      * Adds a user to the database
      * @param user User object to be added.
      */
     public static void addToDataBase(User user)
     {
-        //TODO
+        try
+        {
+            File imageFile=user.getImageFile();
+            FileInputStream fileInputStream = new FileInputStream(imageFile);
+            byte[] imageData = new byte[(int) imageFile.length()];
+            fileInputStream.read(imageData);
+            fileInputStream.close();
+
+            String sql = "INSERT INTO Users (Name, Surname, Username, DateCreated, Password, Email, PhoneNumber, NoOfSoldItems, NoOfTotalItems, ID, Image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getSurname());
+            preparedStatement.setString(3, user.getUsername());
+            preparedStatement.setString(4, user.getDateCreated().toString());
+            preparedStatement.setString(5, user.getPassword());
+            preparedStatement.setString(6, user.getPhoneNumber());
+            preparedStatement.setInt(7, user.getNoOfSoldItems());
+            preparedStatement.setInt(8, user.getNoOfTotalItems());
+            preparedStatement.setInt(9, user.getID());
+            preparedStatement.setBytes(10, imageData);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -95,7 +139,11 @@ public class DatabaseControl
      */
     public static ArrayList<Product> getProducts()
     {
-        ArrayList<Product> products=new ArrayList<>();
+        if(products!=null)
+        {
+            return GenericMethods.copyOf(products);
+        }
+        products=new ArrayList<>();
         try
         {
             ResultSet resultSet=statement.executeQuery("select * from Products;");
@@ -111,6 +159,7 @@ public class DatabaseControl
                 current.setDescription(resultSet.getString("Description"));
                 current.setPrice(resultSet.getFloat("Price"));
                 current.setUserID(resultSet.getInt("UserID"));
+                current.setFavouritedByArray(resultSet.getString("FavouritedBy"));
                 if(resultSet.getBoolean("IsSold")){current.sell();}
                 Product.addIDToPool(resultSet.getInt("ID"));
                 
@@ -128,7 +177,7 @@ public class DatabaseControl
         catch(Exception e){
             e.printStackTrace();
         }
-        return products;
+        return GenericMethods.copyOf(products);
     }
 
 
@@ -138,8 +187,59 @@ public class DatabaseControl
      */
     public static ArrayList<User> getUsers()
     {
-        //TODO
-        return null;
+        if(users!=null)
+        {
+            return GenericMethods.copyOf(users);
+        }
+        users=new ArrayList<>();
+        try
+        {
+            ResultSet resultSet=statement.executeQuery("select * from Users;");
+            ArrayList<Product> products=getProducts();
+            while(resultSet.next())
+            {
+                User user=new User(resultSet.getInt("ID"));
+                user.setName(resultSet.getString("Name"));
+                user.setSurname(resultSet.getString("Surname"));
+                user.setEmail(resultSet.getString("Email"));
+                user.setDateCreated(GenericMethods.createDate(resultSet.getString("DateCreated")));
+                user.setPassword(resultSet.getString("Password"));
+                user.setNoOfSoldItems(resultSet.getInt("NoOfSoldItems"));
+                user.setNoOfTotalItems(resultSet.getInt("NoOfTotalItems"));
+
+                byte[] imageData = resultSet.getBytes("Image");
+                InputStream imageStream = new ByteArrayInputStream(imageData);
+                Path imagePath = Files.createTempFile("user", ".jpg");
+                Files.copy(imageStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
+                File image = imagePath.toFile();
+                user.setImageFile(image);
+
+                for(int i=0;i<products.size();i++)
+                {
+                    Product current=products.get(i);
+                    if(current.getUserID()==user.getID())
+                    {
+                        current.setUser(user);
+                    }
+
+                    Scanner in=new Scanner(current.getFavouritedByArray());
+                    while(in.hasNextInt())
+                    {
+                        if(user.getID()==in.nextInt())
+                        {
+                            current.addFavouritedBy(user);
+                        }
+                    }
+                    in.close();
+                }
+
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return GenericMethods.copyOf(users);
     }
 
     /**
@@ -151,6 +251,7 @@ public class DatabaseControl
         try
         {
             statement.execute("DELETE FROM Products WHERE ID = "+product.getID());
+            product=null;
         }
         catch(Exception e)
         {
@@ -164,7 +265,15 @@ public class DatabaseControl
      */
     public static void removeUser(User user)
     {
-        //TODO
+        try
+        {
+            statement.execute("DELETE FROM Users WHERE ID = "+user.getID());
+            users=null;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -175,6 +284,7 @@ public class DatabaseControl
     {
         removeProduct(product);
         addToDataBase(product);
+        products=null;
     }
 
     /**
@@ -183,7 +293,9 @@ public class DatabaseControl
      */
     public static void updateUser(User user)
     {
-        //TODO
+        removeUser(user);
+        addToDataBase(user);
+        users=null;
     }
 
     /**
@@ -211,56 +323,28 @@ public class DatabaseControl
         {
             statement.execute("DROP TABLE Products;");
         }
-        catch(Exception e){
-            e.printStackTrace();
+        catch(Exception e){e.printStackTrace();}
+        try
+        {
+            statement.execute("DROP TABLE Users;");
         }
+        catch(Exception e){e.printStackTrace();}
         finally
         {
+
             try
             {
-                statement.execute("CREATE TABLE Products(Name VARCHAR(100),Author VARCHAR(100), DatePublished VARCHAR(10), DateUploaded VARCHAR(10),Price FLOAT(5), CourseDepartment VARCHAR(5), CourseCode INTEGER, Description VARCHAR(1000),UserID INTEGER, ID INTEGER, IsBook BIT, IsSold BIT, Image LONGBLOB);");
+                statement.execute("CREATE TABLE Products(Name VARCHAR(100),Author VARCHAR(100), DatePublished VARCHAR(10), DateUploaded VARCHAR(10),Price FLOAT(5), CourseDepartment VARCHAR(5), CourseCode INTEGER, Description VARCHAR(1000),UserID INTEGER, ID INTEGER, IsBook BIT, IsSold BIT, Image LONGBLOB, FavouritedBy TEXT);");
+                statement.execute("CREATE TABLE Users(Name VARCHAR(50), Surname VARCHAR(20), Username VARCHAR(20), DateCreated VARCHAR(10), Password VARCHAR(20),Email VARCHAR(100), PhoneNumber VARCHAR(15), NoOfSoldItems INTEGER, NoOfTotalItems INTEGER, ID INTEGER, Image LONGBLOB);");
+                users=null;
+                products=null;
             }
             catch(Exception e)
             {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void main(String[] args) {
-        setup();
-        /*removeAll();
-        Product p1=new Product("Big Java: Late Objects", "Cay S. Horstmann", GenericMethods.createDate("26/09/2014"), GenericMethods.createDate("16/05/2023"), 1000, "CS", 101, new User(), true, false,null);
-        Product p2=new Product("Calculus", "James Stewart", GenericMethods.createDate("1/1/1987"), GenericMethods.createDate("10/05/2023"), 700, "MATH", 101, new User(), true, false,null);
-        Product p3=new Product("Awesome Turkish Writings", "Sealandball", GenericMethods.createDate("15/4/1987"), GenericMethods.createDate("1/05/2023"), 200, "TURK", 102, new User(), false, false,null);
-        p1.setDescription("Just like first hand!");
-        p2.setDescription("I really like this book hope you do too ^^");
-        p3.setDescription("These are my awesome turkish finals who all got 10!!!");
-        p3.sell();
-        addToDataBase(p1);
-        addToDataBase(p2);
-        addToDataBase(p3);
         
-        Product p4=new Product("Architecture: Form, Space, and Order", "Francis D.K. Ching", GenericMethods.createDate("1/1/1943"), GenericMethods.createDate("17/5/2023"), 500, "FA", 101, new User(), true, false, GenericMethods.chooseFile());
-        addToDataBase(p4);
-        Product p=new Product("BilBook Homepage", "Bil-Team", GenericMethods.createDate("5/04/2023"), GenericMethods.createDate("18/05/2023"), 10000, "CS", 102, new User(), false, false, GenericMethods.chooseFile());
-        addToDataBase(p);*/
-        ArrayList<Product> products=getProducts();
-        Product.sort(products, Product.INTERNETPRICE_PRICE_RATIO);
-        javax.swing.JFrame frame=new javax.swing.JFrame();
-        frame.setSize(1600, 900);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        javax.swing.JPanel panel=new javax.swing.JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setPreferredSize(new Dimension(products.get(0).createPanel(false, null).getWidth()+100, 1000));
-        javax.swing.JScrollPane scroolpanel=new javax.swing.JScrollPane(panel);
-        for(int i=0;i<products.size();i++)
-        {
-            panel.add(products.get(i).createPanel(false, new User()));
-        }
-        frame.add(scroolpanel);
-        frame.setVisible(true);
-        closeConnection();
     }
 
 }
