@@ -103,6 +103,16 @@ public class BilBook extends JFrame
         changePanel(new HomePage(this));
     }
 
+    public User getLoggedIn()
+    {
+        return loggedInUser;
+    }
+
+    public ArrayList<Product> getProducts()
+    {
+        return GenericMethods.copyOf(products);
+    }
+
     @Override
     protected void processWindowEvent(WindowEvent e) {
         DatabaseControl.closeConnection();
@@ -121,11 +131,11 @@ public class BilBook extends JFrame
         {
             if(currentPanel instanceof HomePage)
             {
-                ((HomePage) currentPanel).sortBooks(search.allowBooks(), search.allowNotes(), search.getSelectedDepartment(), search.getSelectedCode(), search.getSearchedName(), search.onlyFavourites(), search.onlyAvailables());
+                ((HomePage) currentPanel).sortBooks(search.allowBooks(), search.allowNotes(), search.getSelectedDepartment(), search.getSelectedCode(), search.getSearchedName(), search.onlyFavourites(), search.onlyAvailables(), search.getSortMethod());
             }
             else if(currentPanel instanceof ProfilePage)
             {
-                ((ProfilePage) currentPanel).sortBooks(search.allowBooks(), search.allowNotes(), search.getSelectedDepartment(), search.getSelectedCode(), search.getSearchedName(), search.onlyFavourites(), search.onlyAvailables());
+                ((ProfilePage) currentPanel).sortBooks(search.allowBooks(), search.allowNotes(), search.getSelectedDepartment(), search.getSelectedCode(), search.getSearchedName(), search.onlyFavourites(), search.onlyAvailables(),search.getSortMethod());
             }
         }
     }
@@ -205,6 +215,11 @@ public class BilBook extends JFrame
             if(!codes.isEnabled()){return 0;}
             return (int)codes.getSelectedItem();
         }
+
+        public String getSortMethod()
+        {
+            return (String) sortMethods.getSelectedItem();
+        } 
 
         public String getSearchedName()
         {
