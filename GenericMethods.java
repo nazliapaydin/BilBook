@@ -12,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
 /**
  * A class that has some generic methods that may be useful for our project.
  * Author: Ata Uzay Kuzey
