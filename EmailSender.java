@@ -9,10 +9,10 @@ import javax.mail.internet.*;
 public class EmailSender {
 
     // Send verification code 
-    public static void sendVerificationCode(String recipientAdress, String verificationCode) {
+    public static void sendVerificationCode(String recipientAddress, String verificationCode) {
 
       // Recipient's email ID needs to be mentioned.
-      String to = recipientAdress;
+      String to = recipientAddress;
 
       // Sender's email ID needs to be mentioned
       String from = "bilbookteam@gmail.com";
