@@ -210,6 +210,10 @@ public class Product implements Comparable<Product>
         return user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public GenericMethods.Date getDatePublished() {
         return datePublished;
     }
@@ -381,6 +385,7 @@ public class Product implements Comparable<Product>
         
         return panel;
     }
+
 
     /**
      * Sorts an arraylist of product objects according to a parameter.
