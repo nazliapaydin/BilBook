@@ -38,7 +38,7 @@ public class User
         this.surname = surname;
         this.password = password;
         this.username = username;
-        this.dateCreated = dateCreated; //cannot be changed later
+        this.dateCreated = dateCreated;
         this.phoneNumber = phoneNumber;
         this.mail = mail;
         this.profilePic = image;
@@ -123,6 +123,31 @@ public class User
     }
 
     //setters
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public void setSurname (String surname)
+    {
+        this.surname = surname;
+    }
+
+    public void setPassword( String password)
+    {
+        this.password = password;
+    }
+
+    public void setDateCreated(Date date)
+    {
+        this.dateCreated = date;
+    }
+
+    public void setPhoneNumber(String phoneNumber)
+    {
+        this.phoneNumber = phoneNumber;
+    }
+
     public void setUsername(String username)
     {
         this.username = username;
@@ -167,7 +192,6 @@ public class User
     {
         uniqueIDList.remove(user.ID);
     }
-
 
     @Override
     public String toString() 
