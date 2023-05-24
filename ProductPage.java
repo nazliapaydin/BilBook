@@ -1,11 +1,14 @@
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.File;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class ProductPage extends JPanel{
 
@@ -28,6 +31,35 @@ public class ProductPage extends JPanel{
         container1.add(publisherFeatures);
         add(container1);
 
+        JPanel description = new JPanel(new GridLayout(2,1));
+        JLabel string = new JLabel("Description:");
+        JTextField descriptionText = new JTextField(product.getDescription(), 5);
+        description.add(string);
+        description.add(descriptionText);
+
+        JPanel prices = new JPanel(new GridLayout(1,2));
+        JPanel seller = new JPanel(new GridLayout(2, 1));
+        JLabel sellerText = new JLabel("Seller's Price");
+        JLabel sellerPrice = new JLabel(product.getPrice() + "₺");
+        seller.add(sellerText);
+        seller.add(sellerPrice);
+        JPanel online = new JPanel(new GridLayout(2, 1));
+        JLabel onlineText = new JLabel("Online Price");
+        JLabel onlinePrice = new JLabel(product.getOnlinePrice() + "$");
+        online.add(onlineText);
+        online.add(onlinePrice);
+        prices.add(seller);
+        prices.add(online);
+
+        ImageIcon starImage = GenericMethods.fileToImage(new File("not_favorite.png") , 50);
+        JButton favoriteButton = new JButton(starImage);
+        favoriteButton.setPreferredSize(new Dimension(50, 50));
+
+        JPanel container2 = new JPanel(new FlowLayout());
+        container2.add(description);
+        container2.add(prices);
+        container2.add(favoriteButton);
+        add(container2);
     }
 
     public JPanel featuresLabel(Product product) {
