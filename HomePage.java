@@ -1,10 +1,5 @@
-
-import java.awt.FlowLayout;
 import java.awt.ScrollPane;
 import java.util.ArrayList;
-import java.util.Formatter.BigDecimalLayoutForm;
-
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
