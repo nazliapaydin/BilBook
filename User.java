@@ -23,7 +23,7 @@ public class User
     private String mail;
     private File profilePic;
     private static ArrayList<Integer> uniqueIDList = new ArrayList<Integer>();
-    private ArrayList<Product> books;
+    private ArrayList<Product> products;
 
     /**
      * @param username
@@ -54,7 +54,7 @@ public class User
 
         do
         {
-            this.ID=GenericMethods.rand.nextInt(Integer.MAX_VALUE); //cannot be changed later
+            this.ID=GenericMethods.rand.nextInt(Integer.MAX_VALUE);
         }
         while(uniqueIDList.contains(this.ID));
         
@@ -173,19 +173,34 @@ public class User
         numOfTotalItems+=change;
     }
 
-    public void addBook(Product product)
+    public void setSoldItems(int soldItems)
     {
-        books.add(product);
+        this.numOfSoldItems = soldItems;
     }
 
-    public void removeBook( Product product)
+    public void setTotalItems(int totalItems)
     {
-        books.remove(product);
+        this.numOfTotalItems = totalItems;
     }
 
-    public ArrayList<Product> getBooks()
+    public void setProducts(ArrayList<Product> products)
     {
-        return GenericMethods.copyOf(books);
+        this.products = products;
+    }
+
+    public void addProduct(Product product)
+    {
+        products.add(product);
+    }
+
+    public void removeProduct( Product product)
+    {
+        products.remove(product);
+    }
+
+    public ArrayList<Product> getproducts()
+    {
+        return GenericMethods.copyOf(products);
     }
 
     public void removeUser(User user)
