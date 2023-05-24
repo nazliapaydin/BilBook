@@ -304,7 +304,7 @@ public class Product implements Comparable<Product>
         panel.setPreferredSize(new Dimension(1000, 200));
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
-        JLabel bookImage=new JLabel(GenericMethods.fileToImage(image,150));
+        JPanel bookImage=GenericMethods.imageIntoPanel(GenericMethods.fileToImage(image,150));
         JPanel leftPanel=new JPanel();leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS)); leftPanel.add(Box.createRigidArea(new Dimension(20, 1))); leftPanel.add(bookImage);
         JPanel bookInformation=new JPanel(new GridLayout(9,1));
         JLabel name=new JLabel(this.name+" ("+datePublished+")"); JLabel course=new JLabel(courseDepartment+(courseCode==0 ? "" : courseCode)); 
@@ -337,7 +337,7 @@ public class Product implements Comparable<Product>
 
         if(!isProfilePage)
         {
-            JLabel profilePic=new JLabel(GenericMethods.fileToImage(user.getImageFile(), 140));
+            JPanel profilePic=GenericMethods.imageIntoPanel(GenericMethods.fileToImage(user.getImageFile(), 140));
             rightPanel.add(profilePic,BorderLayout.CENTER);
         }
 
@@ -348,29 +348,29 @@ public class Product implements Comparable<Product>
         if(loggedInUser!=null&&user.getID()==loggedInUser.getID())
         {
             rightMostIn.setLayout(new BorderLayout());
-            JLabel thrashCan=new JLabel(GenericMethods.THRASH_CAN);
-            JLabel star;
+            JPanel thrashCan=GenericMethods.imageIntoPanel(GenericMethods.THRASH_CAN);
+            JPanel star;
             if(isSold)
             {
-                star=new JLabel(GenericMethods.SOLD);
+                star=GenericMethods.imageIntoPanel(GenericMethods.SOLD);
             }
             else
             {
-                star=new JLabel(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR);
+                star=GenericMethods.imageIntoPanel(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR);
             }
             rightMostIn.add(thrashCan,BorderLayout.NORTH); rightMostIn.add(star,BorderLayout.CENTER); rightMostIn.add(Box.createRigidArea(new Dimension(GenericMethods.FAVOURITE_STAR.getIconWidth()-10, GenericMethods.FAVOURITE_STAR.getIconWidth()-10)),BorderLayout.SOUTH);
         }
         else
         {
             rightMostIn.setLayout(new GridLayout(1, 1));
-            JLabel star;
+            JPanel star;
             if(isSold)
             {
-                star=new JLabel(GenericMethods.SOLD);
+                star=GenericMethods.imageIntoPanel(GenericMethods.SOLD);
             }
             else
             {
-                star=new JLabel(loggedInUser==null ? GenericMethods.NOT_FAVOURITE_STAR:(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR));
+                star=GenericMethods.imageIntoPanel(loggedInUser==null ? GenericMethods.NOT_FAVOURITE_STAR:(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR));
             }
             rightMostIn.add(star);
         }
@@ -381,7 +381,6 @@ public class Product implements Comparable<Product>
         
         return panel;
     }
-
 
     /**
      * Sorts an arraylist of product objects according to a parameter.
