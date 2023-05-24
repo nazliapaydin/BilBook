@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -49,9 +50,11 @@ public class ProductPageEditable extends JPanel{
         prices.add(seller);
         prices.add(online);
 
-        ImageIcon starImage = GenericMethods.NOT_FAVOURITE_STAR;
+        ImageIcon starImageOff = GenericMethods.NOT_FAVOURITE_STAR;
+        ImageIcon starImageOn = GenericMethods.FAVOURITE_STAR;
         JPanel favorite = new JPanel();
-        JLabel star = new JLabel(starImage);
+        JCheckBox star = new JCheckBox(starImageOff);
+        star.setSelectedIcon(starImageOn);
         favorite.add(star);
         favorite.setPreferredSize(new Dimension(50, 50));
 
