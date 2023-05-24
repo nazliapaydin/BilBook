@@ -1,8 +1,6 @@
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.io.File;
-
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,6 +32,7 @@ public class ProductPage extends JPanel{
         JPanel description = new JPanel(new GridLayout(2,1));
         JLabel string = new JLabel("Description:");
         JTextField descriptionText = new JTextField(product.getDescription(), 5);
+        descriptionText.setEditable(false);
         description.add(string);
         description.add(descriptionText);
 
@@ -51,14 +50,16 @@ public class ProductPage extends JPanel{
         prices.add(seller);
         prices.add(online);
 
-        ImageIcon starImage = GenericMethods.fileToImage(new File("not_favorite.png") , 50);
-        JButton favoriteButton = new JButton(starImage);
-        favoriteButton.setPreferredSize(new Dimension(50, 50));
+        ImageIcon starImage = GenericMethods.NOT_FAVOURITE_STAR;
+        JPanel favorite = new JPanel();
+        JLabel star = new JLabel(starImage);
+        favorite.add(star);
+        favorite.setPreferredSize(new Dimension(50, 50));
 
         JPanel container2 = new JPanel(new FlowLayout());
         container2.add(description);
         container2.add(prices);
-        container2.add(favoriteButton);
+        container2.add(favorite);
         add(container2);
     }
 
