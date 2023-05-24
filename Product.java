@@ -65,7 +65,7 @@ public class Product implements Comparable<Product>
         this.courseCode=courseCode;
         this.user=user;
         this.userID=user.getID();
-        this.onlinePrice=isBook ? PriceScraping.priceScrape(name): 0;
+        this.onlinePrice=isBook ? PriceScraper.priceScrape(name, author, datePublished.getYear()): 0;
         this.isBook=isBook;
         this.isSold=isSold;
         this.description="";
@@ -100,7 +100,7 @@ public class Product implements Comparable<Product>
     {
         this.ID=ID;
         this.isBook=isBook;
-        this.onlinePrice=isBook ? PriceScraping.priceScrape(name): 0;
+        this.onlinePrice=isBook ? PriceScraper.priceScrape(name, author, datePublished.getYear()): 0;
         this.favouritedBy=new ArrayList<>();
     }
 
@@ -151,7 +151,7 @@ public class Product implements Comparable<Product>
 
     public void updateOnlinePrice()
     {
-        this.onlinePrice=PriceScraping.priceScrape(name);
+        this.onlinePrice=PriceScraper.priceScrape(name, author, datePublished.getYear());
     }
 
     public void addFavouritedBy(User user)
@@ -287,7 +287,7 @@ public class Product implements Comparable<Product>
         if(!courseDepartment.equals("ALL")&&!courseDepartment.equals(this.courseDepartment)){return false;}
         if(courseCode!=0&&courseCode!=this.courseCode&&!courseDepartment.equals("OTHER")&&!courseDepartment.equals("ALL")){return false;}
         if(GenericMethods.stringSimilarity(this.name, searchBar)<0.75){return false;}
-        if(showOnlyFavourites&&!loggedInUser.isFavourite(this)){return false;}
+        if(showOnlyFavourites&&!favouritedBy.contains(loggedInUser)){return false;}
         if(dontShowSold&&isSold){return false;}
         return true;
     }
@@ -300,10 +300,6 @@ public class Product implements Comparable<Product>
      */
     public JPanel createPanel(boolean isProfilePage, User loggedInUser, BilBook bilBook)
     {
-        if(this.user==null)
-        {
-            user=new User();
-        }
         JPanel panel=new JPanel();
         panel.setPreferredSize(new Dimension(1000, 200));
         panel.setLayout(new BorderLayout());
@@ -360,7 +356,7 @@ public class Product implements Comparable<Product>
             }
             else
             {
-                star=new JLabel(loggedInUser.isFavourite(this) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR);
+                star=new JLabel(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR);
             }
             rightMostIn.add(thrashCan,BorderLayout.NORTH); rightMostIn.add(star,BorderLayout.CENTER); rightMostIn.add(Box.createRigidArea(new Dimension(GenericMethods.FAVOURITE_STAR.getIconWidth()-10, GenericMethods.FAVOURITE_STAR.getIconWidth()-10)),BorderLayout.SOUTH);
         }
@@ -374,7 +370,7 @@ public class Product implements Comparable<Product>
             }
             else
             {
-                star=new JLabel(loggedInUser==null ? GenericMethods.NOT_FAVOURITE_STAR:(loggedInUser.isFavourite(this) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR));
+                star=new JLabel(loggedInUser==null ? GenericMethods.NOT_FAVOURITE_STAR:(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR));
             }
             rightMostIn.add(star);
         }
