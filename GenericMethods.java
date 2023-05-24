@@ -322,6 +322,13 @@ public class GenericMethods
         int day=Integer.valueOf(date.substring(1+date.indexOf('-',1+date.indexOf('-', 0))));
         return createDate(day, month, year);
     }
+    
+    public static JPanel imageIntoPanel(ImageIcon icon)
+    {
+        JLabel label=new JLabel(icon);
+        JPanel panel=new JPanel(); panel.add(label);
+        return panel;
+    }
 
     /**
      * A class that respresents a date object. A date object has instance variables for the day, month and year. 
