@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.event.*;
 
 public class logIn extends JPanel implements ActionListener{
+	//private Bilbook bilbook;
 	JTextField textOfUsername;
 	JTextField textOfPassword;
 	JButton buttonForLogIn;
@@ -25,8 +26,9 @@ public class logIn extends JPanel implements ActionListener{
 	String password;
 	JLabel labelForInvalidUsername;
 	JLabel labelForInvalidPassword;
-	public logIn()
+	public logIn(/*Bilbook bilbook*/)
 	{
+		//this.bilbook=bilbook
 	}
 	public  void frameOfLogIn()
 	{
@@ -142,24 +144,32 @@ public class logIn extends JPanel implements ActionListener{
 	{
         if(e.getSource()==buttonForLogIn)
 		{
+			boolean validuUsername=true;
+			boolean validPassword=true;
 			username=textOfUsername.getText();
 			password=textOfPassword.getText();
 			if(username==null)
 			{
 				labelForInvalidUsername = new JLabel();
 				labelForInvalidUsername.setText("Invalid username ");
-				labelForInvalidUsername.setBounds(0,100,150,100);
+				labelForInvalidUsername.setBounds(720,420,200,30);
 				labelForInvalidUsername.setVisible(true);
 				frame.add(labelForInvalidUsername);
+				validuUsername=false;
 
 			}
 			if(password==null)
 			{
 				labelForInvalidPassword = new JLabel();
 				labelForInvalidPassword.setText("Invalid password ");
-				labelForInvalidPassword.setBounds(0,100,150,100);
+				labelForInvalidPassword.setBounds(720,470,200,30);
 				labelForInvalidPassword.setVisible(true);
 				frame.add(labelForInvalidPassword);
+				validPassword=false;
+			}
+			if(validPassword&&validuUsername)
+			{
+
 			}
 		}
 		if(e.getSource()==buttonForSignUp)

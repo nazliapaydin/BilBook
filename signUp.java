@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 public class signUp extends JPanel implements ActionListener{
+	//private Bilbook bilbook;
     JTextField textOfName;
 	JTextField textOfSurname;
     JTextField textOfUsername;
@@ -47,9 +48,9 @@ public class signUp extends JPanel implements ActionListener{
     JLabel labelForInvalidPasswordAgain;
 
 
-    public signUp()
+    public signUp(/*Bilbook bilbook*/)
     {
-
+		//this.bilbook=bilbook
     }
     public void frameOfSignUp()
     {
@@ -77,10 +78,8 @@ public class signUp extends JPanel implements ActionListener{
         buttonForForgottenPassword= new JButton();
 
 
-		//Sorun var!!
-		//İkon istediğim yerde çıkmıyor
         ImageIcon BilBookImage = new ImageIcon("BilBookImage.png");
-		labelForImage.setBounds(300, 400, 346, 147);
+		labelForImage.setBounds(150, 220, 346, 147);
 		labelForImage.setIcon(BilBookImage);
 
         textOfName.addActionListener(this);
@@ -124,21 +123,19 @@ public class signUp extends JPanel implements ActionListener{
 		buttonForSignUp.setBackground(Color.cyan);
 		buttonForSignUp.setBorder(BorderFactory.createEtchedBorder());
 
-        buttonForLogIn.setBounds(730, 555, 150, 25);
+        buttonForLogIn.setBounds(725, 555, 150, 20);
 		buttonForLogIn.addActionListener(this);
 		buttonForLogIn.setText("Log In");
 		buttonForLogIn.setFocusable(false);
 		buttonForLogIn.setHorizontalTextPosition(JButton.CENTER);
 		buttonForLogIn.setVerticalTextPosition(JButton.BOTTOM);
-		buttonForLogIn.setFont(new Font("New York Times",Font.BOLD,15));
+		buttonForLogIn.setFont(new Font("New York Times",Font.BOLD,13));
 		buttonForLogIn.setIconTextGap(-15);
 		buttonForLogIn.setForeground(Color.black);
 		//buttonForLogIn.setBackground(Color.cyan);
 		buttonForLogIn.setBorder(BorderFactory.createEtchedBorder());
 
-        labelForLogIn.setText("Log In ");
-		labelForLogIn.setBounds(0,580,150,100);
-		labelForLogIn.setVisible(true);
+      
 
         labelForSignUp.setText("Sign up ");
         labelForSignUp.setForeground(Color.cyan);
@@ -179,9 +176,6 @@ public class signUp extends JPanel implements ActionListener{
 		labelForAlreadyAccount.setVisible(true);
 
 
-		labelForImage.setBounds(0,100,150,100);
-		labelForImage.setVisible(true);
-
     
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -219,6 +213,7 @@ public class signUp extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==buttonForSignUp)
         {
+			boolean validation =true;
             name=textOfName.getText();
             surname=textOfSurname.getText();
             username=textOfUsername.getText();
@@ -230,58 +225,70 @@ public class signUp extends JPanel implements ActionListener{
 			{
 				labelForInvalidName = new JLabel();
 				labelForInvalidName.setText("Invalid name ");
-				labelForInvalidName.setBounds(0,100,150,100);
+				labelForInvalidName.setBounds(660,142,150,20);
 				labelForInvalidName.setVisible(true);
 				frame.add(labelForInvalidName);
+				validation =false;
+
 			}
             if(surname==null)
 			{
 				labelForInvalidSurname = new JLabel();
 				labelForInvalidSurname.setText("Invalid surname ");
-				labelForInvalidSurname.setBounds(0,100,150,100);
+				labelForInvalidSurname.setBounds(660,190,150,20);
 				labelForInvalidSurname.setVisible(true);
 				frame.add(labelForInvalidSurname);
+				validation =false;
 			}
             if(username==null)
 			{
 				labelForInvalidUsername = new JLabel();
 				labelForInvalidUsername.setText("Invalid username ");
-				labelForInvalidUsername.setBounds(0,100,150,100);
+				labelForInvalidUsername.setBounds(660,240,150,20);
 				labelForInvalidUsername.setVisible(true);
 				frame.add(labelForInvalidUsername);
+				validation =false;
 			}
             if(email==null)
 			{
 				labelForInvalidEmail = new JLabel();
 				labelForInvalidEmail.setText("Invalid E-Mail ");
-				labelForInvalidEmail.setBounds(0,100,150,100);
+				labelForInvalidEmail.setBounds(660,290,150,20);
 				labelForInvalidEmail.setVisible(true);
 				frame.add(labelForInvalidEmail);
+				validation =false;
 			}
             if(phoneNumber==null)
 			{
 				labelForInvalidPhoneNumber = new JLabel();
 				labelForInvalidPhoneNumber.setText("Invalid Phone number ");
-				labelForInvalidPhoneNumber.setBounds(0,100,150,100);
+				labelForInvalidPhoneNumber.setBounds(660,340,150,20);
 				labelForInvalidPhoneNumber.setVisible(true);
 				frame.add(labelForInvalidPhoneNumber);
+				validation =false;
 			}
 			if(password==null)
 			{
 				labelForInvalidPassword = new JLabel();
 				labelForInvalidPassword.setText("Invalid password ");
-				labelForInvalidPassword.setBounds(0,100,150,100);
+				labelForInvalidPassword.setBounds(660,390,150,20);
 				labelForInvalidPassword.setVisible(true);
 				frame.add(labelForInvalidPassword);
+				validation =false;
 			}
             if(passwordAgain==null)
 			{
 				labelForInvalidPasswordAgain = new JLabel();
 				labelForInvalidPasswordAgain.setText("Invalid password again ");
-				labelForInvalidPasswordAgain.setBounds(0,100,150,100);
+				labelForInvalidPasswordAgain.setBounds(660,440,150,20);
 				labelForInvalidPasswordAgain.setVisible(true);
 				frame.add(labelForInvalidPasswordAgain);
+				validation =false;
 			}
+				if(validation&&password.equals(passwordAgain))
+				{
+
+				}
         }
         if(e.getSource()==buttonForLogIn)
         {
