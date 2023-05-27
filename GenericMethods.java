@@ -3,6 +3,9 @@ import java.util.Collections;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.ArrayList;
 import java.awt.Color;
@@ -12,8 +15,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 /**
  * A class that has some generic methods that may be useful for our project.
  * Author: Ata Uzay Kuzey
@@ -46,48 +47,6 @@ public class GenericMethods
         Collections.sort(arrayList);
     }
 
-     /**
-     * A method to reverse sort an arraylist using the sort method from the Arrays class. It does not return the sorted arraylist,
-     * instead the arraylist is replaced with the sorted one.
-     * @param <T> class of the objects the arraylist contains.
-     * @param arrayList arraylist to be reverse sorted.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Comparable<T>> void reverseSort(ArrayList<T> arrayList)
-    {
-        if(arrayList==null)
-        {
-            throw new NullPointerException();
-        }
-        Object[] array=arrayList.toArray();
-        arrayList.removeAll(arrayList);
-        Arrays.sort(array);
-        for(int i=array.length-1;i>=0;i--)
-        {
-            arrayList.add((T)array[i]);
-        }
-    }
-
-     /**
-     * A method to invert the members of an arraylist. It does not return the inverted arraylist,
-     * instead the arraylist is replaced with the inverted one.
-     * @param <T> class of the objects the arraylist contains.
-     * @param arrayList arraylist to be inverted.
-     */
-    public static <T> void invert(ArrayList<T> arrayList)
-    {
-        if(arrayList==null)
-        {
-            throw new NullPointerException();
-        }
-        ArrayList<T> ogList=copyOf(arrayList);
-        arrayList.removeAll(arrayList);
-        for(int i=ogList.size()-1;i>=0;i--)
-        {
-            arrayList.add(ogList.get(i));
-        }
-    }
-
     /**
      * Creates a file chooser for the user to choose a file.
      * @return the file chosen.
@@ -108,6 +67,22 @@ public class GenericMethods
         {
             return null;
         }
+    }
+
+    /**
+     * A method that gets what is inside of a passwordfield
+     * @param passwordfield the passwordfield
+     * @return the string object inside the field
+     */
+    public static String passwordFieldToString(JPasswordField passwordField)
+    {
+        String str="";
+        char[] arr=passwordField.getPassword();
+        for(char c: arr)
+        {
+            str+=c;
+        }
+        return str;
     }
 
     /**
@@ -324,7 +299,7 @@ public class GenericMethods
         int day=Integer.valueOf(date.substring(1+date.indexOf('-',1+date.indexOf('-', 0))));
         return createDate(day, month, year);
     }
-    
+
     public static JPanel imageIntoPanel(ImageIcon icon)
     {
         JLabel label=new JLabel(icon);
@@ -453,6 +428,10 @@ public class GenericMethods
                 return day-o.day;
             }
             return 0;
+        }
+
+        public int getYear() {
+            return year;
         }
 
         @Override
