@@ -58,7 +58,7 @@ public class DatabaseControl
             fileInputStream.read(imageData);
             fileInputStream.close();
 
-            String sql = "INSERT INTO Products (Name, Author, DatePublished, DateUploaded, Price, CourseDepartment, CourseCode,Description ,UserID, IsBook, IsSold, Image, FavouritedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Products (Name, Author, DatePublished, DateUploaded, Price, CourseDepartment, CourseCode,Description ,UserID, ID,IsBook, IsSold, Image, FavouritedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, product.getName());
             preparedStatement.setString(2, product.getAuthor());
@@ -69,10 +69,11 @@ public class DatabaseControl
             preparedStatement.setInt(7, product.getCourseCode());
             preparedStatement.setString(8, product.getDescription());
             preparedStatement.setInt(9, product.getUserID());
-            preparedStatement.setBoolean(10, product.isBook());
-            preparedStatement.setBoolean(11, product.isSold());
-            preparedStatement.setBytes(12, imageData);
-            preparedStatement.setString(13, convertOperation(product.getFavouritedBy()));
+            preparedStatement.setInt(10, product.getID());
+            preparedStatement.setBoolean(11, product.isBook());
+            preparedStatement.setBoolean(12, product.isSold());
+            preparedStatement.setBytes(13, imageData);
+            preparedStatement.setString(14, convertOperation(product.getFavouritedBy()));
             preparedStatement.executeUpdate();
             preparedStatement.close();
         }
@@ -120,8 +121,8 @@ public class DatabaseControl
             preparedStatement.setString(4, user.getDateCreated().toString());
             preparedStatement.setString(5, user.getPassword());
             preparedStatement.setString(6, user.getPhoneNumber());
-            preparedStatement.setInt(7, user.getNoOfSoldItems());
-            preparedStatement.setInt(8, user.getNoOfTotalItems());
+            preparedStatement.setInt(7, user.getNumOfSoldItems());
+            preparedStatement.setInt(8, user.getNumOfTotalItems());
             preparedStatement.setInt(9, user.getID());
             preparedStatement.setBytes(10, imageData);
             preparedStatement.executeUpdate();
@@ -146,7 +147,7 @@ public class DatabaseControl
         products=new ArrayList<>();
         try
         {
-            ResultSet resultSet=statement.executeQuery("select * from Products;");
+            ResultSet resultSet=statement.executeQuery("select * from Products");
             while(resultSet.next())
             {
                 Product current=new Product(resultSet.getInt("ID"), resultSet.getBoolean("IsBook"));
@@ -169,7 +170,7 @@ public class DatabaseControl
                 Files.copy(imageStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
                 File image = imagePath.toFile();
                 current.setImageFile(image);
-
+                current.updateOnlinePrice();
                 products.add(current);
             }
             resultSet.close();
@@ -201,18 +202,18 @@ public class DatabaseControl
                 User user=new User(resultSet.getInt("ID"));
                 user.setName(resultSet.getString("Name"));
                 user.setSurname(resultSet.getString("Surname"));
-                user.setEmail(resultSet.getString("Email"));
+                user.setMail(resultSet.getString("Email"));
                 user.setDateCreated(GenericMethods.createDate(resultSet.getString("DateCreated")));
                 user.setPassword(resultSet.getString("Password"));
-                user.setNoOfSoldItems(resultSet.getInt("NoOfSoldItems"));
-                user.setNoOfTotalItems(resultSet.getInt("NoOfTotalItems"));
+                user.setSoldItems(resultSet.getInt("NoOfSoldItems"));
+                user.setTotalItems(resultSet.getInt("NoOfTotalItems"));
 
                 byte[] imageData = resultSet.getBytes("Image");
                 InputStream imageStream = new ByteArrayInputStream(imageData);
                 Path imagePath = Files.createTempFile("user", ".jpg");
                 Files.copy(imageStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
                 File image = imagePath.toFile();
-                user.setImageFile(image);
+                user.setProfilePic(image);
 
                 for(int i=0;i<products.size();i++)
                 {
@@ -220,6 +221,7 @@ public class DatabaseControl
                     if(current.getUserID()==user.getID())
                     {
                         current.setUser(user);
+                        user.addProduct(current);
                     }
 
                     Scanner in=new Scanner(current.getFavouritedByArray());
@@ -251,7 +253,7 @@ public class DatabaseControl
         try
         {
             statement.execute("DELETE FROM Products WHERE ID = "+product.getID());
-            product=null;
+            products=null;
         }
         catch(Exception e)
         {
@@ -346,5 +348,4 @@ public class DatabaseControl
         }
         
     }
-
 }
