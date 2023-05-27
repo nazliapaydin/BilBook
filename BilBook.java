@@ -1,6 +1,10 @@
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.Box;
@@ -16,8 +20,6 @@ import javax.swing.event.DocumentListener;
 
 public class BilBook extends JFrame
 {
-    private static String[] departments=new String[]{"ALL","MATH", "CS"};//update
-    private static Integer[][] codes=new Integer[][]{new Integer[]{0},new Integer[]{101,102,132}, new Integer[]{101,102,201}};//update
     private static String[] sorts=new String[]{"Price ▲", "Price ▼", "Date ▲", "Date ▼", "Profit %", "Random"};
 
     private User loggedInUser;
@@ -37,12 +39,14 @@ public class BilBook extends JFrame
     private void setup()
     {
         DatabaseControl.setup();
+        datasOfLectures.getDepartments();
         setSize(1619, 906);
         setTitle("BilBook");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         products=DatabaseControl.getProducts();
         users=DatabaseControl.getUsers();
         currentPanel=new HomePage(this);
+        add(currentPanel);
     }
 
     /**
@@ -52,9 +56,14 @@ public class BilBook extends JFrame
      */
     public void changePanel(JPanel panel)
     {
-        removeAll();
+        remove(currentPanel);
+        currentPanel=panel;
         add(panel);
-        panel.updateUI();
+    }
+
+    public void refreshPage()
+    {
+        //TODO
     }
 
     public JPanel createMenuBar()
@@ -141,6 +150,18 @@ public class BilBook extends JFrame
     }
 
     /**
+     * A method that logs in the user.
+     * @param user user to be loged in.
+     */
+    public void logIn(User user)
+    {
+        if(loggedInUser==null)
+        {
+            loggedInUser=user;
+        }
+    }
+
+    /**
      * An inner class that extends JPanel. It is equipped with the necessary components to search products. This class is used with the HomePage
      * and ProfilePage objects.
      * Author: Ata Uzay Kuzey
@@ -150,7 +171,7 @@ public class BilBook extends JFrame
         JCheckBox books;
         JCheckBox notes;
         JComboBox<String> departments;
-        JComboBox<Integer> codes;
+        JComboBox<String> codes;
         JComboBox<String> sortMethods;
         JTextField searchBar;
         JCheckBox onlyFavourites;
@@ -169,7 +190,7 @@ public class BilBook extends JFrame
             this.isProfilePage=isProfilePage;
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             books=new JCheckBox("Books"); notes=new JCheckBox("Notes"); books.setSelected(true); notes.setSelected(true);
-            departments=new JComboBox<>(BilBook.departments); codes=new JComboBox<>(); codes.setEnabled(false);departments.addItemListener(new DepartmentsAndCodes());
+            departments=new JComboBox<>(datasOfLectures.lectures); codes=new JComboBox<>(datasOfLectures.getCodes(0)); codes.setEnabled(false);departments.addItemListener(new DepartmentsAndCodes());
             departments.setSelectedIndex(0); sortMethods=new JComboBox<>(sorts); searchBar=new JTextField();add(Box.createRigidArea(new Dimension(10, 10)));
             add(books); add(Box.createRigidArea(new Dimension(20, 10)));add(notes); add(Box.createHorizontalGlue());
             add(departments); add(Box.createRigidArea(new Dimension(20, 10))); add(codes); add(Box.createHorizontalGlue());
@@ -192,7 +213,8 @@ public class BilBook extends JFrame
             add(Box.createRigidArea(new Dimension(10, 10)));
             books.addItemListener(new SortChange()); notes.addItemListener(new SortChange()); departments.addItemListener(new SortChange());
             codes.addItemListener(new SortChange()); sortMethods.addItemListener(new SortChange()); 
-            searchBar.getDocument().addDocumentListener(new TextChange());  
+            searchBar.getDocument().addDocumentListener(new TextChange());
+            changeScrollPane(this);
         }
 
         public boolean allowBooks()
@@ -213,7 +235,7 @@ public class BilBook extends JFrame
         public int getSelectedCode()
         {
             if(!codes.isEnabled()){return 0;}
-            return (int)codes.getSelectedItem();
+            return Integer.valueOf((String)codes.getSelectedItem());
         }
 
         public String getSortMethod()
@@ -252,7 +274,7 @@ public class BilBook extends JFrame
                 }
                 else
                 {
-                    DefaultComboBoxModel<Integer> model= new DefaultComboBoxModel<>(BilBook.codes[department]);
+                    DefaultComboBoxModel<String> model= new DefaultComboBoxModel<>(datasOfLectures.getCodes(department));
                     codes.setModel(model);
                     codes.setEnabled(true);
                 }
@@ -288,5 +310,146 @@ public class BilBook extends JFrame
                 changeScrollPane(SearchMenu.this);
             }
         }
+    }
+
+    /**
+     * A mouselistener that can open a popup to confirm the deletion of the product
+     * Author: Ata Uzay Kuzey
+     * @param product the product that is going to be deleted
+     * @return the mouselistener
+     */
+    public MouseListener productRemover(Product product)
+    {
+        class ProductRemover implements MouseListener
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PopUpManager.deleteProductPopup(BilBook.this, product);
+            }
+    
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+    
+            @Override
+            public void mouseExited(MouseEvent e) {}
+    
+            @Override
+            public void mousePressed(MouseEvent e) {}
+    
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        }
+    
+        return new ProductRemover();
+    }
+
+    /**
+     * An actionlistener that can open a popup to confirm the deletion of the product
+     * Author: Ata Uzay Kuzey
+     * @param product the product that is going to be deleted
+     * @return the actionlistener
+     */
+    public ActionListener productRemoverForJButton(Product product)
+    {
+        class ProductRemover implements ActionListener
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PopUpManager.deleteProductPopup(BilBook.this, product);
+            }
+        }
+
+        return new ProductRemover();
+    }
+
+    /**
+     * An itemlistener that controls the "favourite star" in our panels. If the star is active, the product is added as a favourite to the user.
+     * Author: Ata Uzay Kuzey
+     * @param product the product the itemlistener is for.
+     * @return an itemlistener that can check a checkbox's state.
+     */
+    public ItemListener favouriteListener(Product product)
+    {
+        class FavouriteListener implements ItemListener
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                JCheckBox starCheck = (JCheckBox) e.getSource();
+                if(loggedInUser!=null)
+                {
+                    if(starCheck.isSelected())
+                    {
+                        product.addFavouritedBy(loggedInUser);
+                    }
+                    else
+                    {
+                        product.removeFavouritedBy(loggedInUser);
+                    }
+                }
+                else
+                {
+                    starCheck.setSelected(false);
+                    changePanel(new logIn());
+                }
+
+            }
+        }
+        return new FavouriteListener();
+    }
+
+    /**
+     * Removes a product object from BilBook and the Database.
+     * Author: Ata Uzay Kuzey
+     * @param product the product object to be deleted.
+     */
+    public void removeProduct(Product product)
+    {
+        products.remove(product);
+        loggedInUser.removeProduct(product);
+        DatabaseControl.removeProduct(product);
+        if(currentPanel instanceof ProductPage)
+        {
+            changePanel(new HomePage(this));
+        }
+        else
+        {
+            refreshPage();
+        }
+    }
+
+    /**
+     * Removes a user object from BilBook and the Database. Also deletes all the products by that user.
+     * Author: Ata Uzay Kuzey
+     * @param user the user object to be deleted.
+     */
+    public void removeUser(User user)
+    {
+        users.remove(user);
+        ArrayList<Product> userProducts=user.getproducts();
+        for(int i=0;i<userProducts.size();i++)
+        {
+            removeProduct(userProducts.get(i));
+        }
+        DatabaseControl.removeUser(user);
+        for(Product current: products)
+        {
+            current.removeFavouritedBy(user);
+            DatabaseControl.updateProduct(current);
+        }
+        logOut();
+        if(currentPanel instanceof ProfilePage)
+        {
+            changePanel(new HomePage(this));
+        }
+        else
+        {
+            refreshPage();
+        }
+    }
+
+
+    public static void main(String[] args) {
+        BilBook bilBook=new BilBook();
+        bilBook.setVisible(true);
     }
 }
