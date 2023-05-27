@@ -6,11 +6,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.Popup;
-import javax.swing.SwingConstants;
-
-import com.mysql.cj.x.protobuf.MysqlxNotice.Warning;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,7 +13,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
+/**
+ * A class that creates and manages popups in our program.
+ * Author: Ata Uzay Kuzey
+ */
 public class PopUpManager extends JFrame
 {
     private BilBook bilBook;
@@ -56,13 +54,14 @@ public class PopUpManager extends JFrame
         generalPanel.setLayout(new BoxLayout(generalPanel, BoxLayout.Y_AXIS));
         if(code==DELETE_BOOK){
             label.setText("Are you sure you want to delete this book?");
+            confirm.addActionListener(new DeleteProductConfirm(product));
             generalPanel.add(Box.createRigidArea(new Dimension(1, 40)));generalPanel.add(label); 
             generalPanel.add(Box.createRigidArea(new Dimension(1, 10))); generalPanel.add(buttonPanel);
         }
         if(code==DELETE_PROFILE){
             label.setText("Are you sure you want to delete your profile?");
             JLabel warning=new JLabel("                        This action is irreversable."); warning.setFont(new Font(getName(), Font.PLAIN, 10));
-            generalPanel.add(Box.createRigidArea(new Dimension(1, 40))); generalPanel.add(label); generalPanel.add(warning);
+            generalPanel.add(Box.createRigidArea(new Dimension(1, 40))); generalPanel.add(label); generalPanel.add(warning); notConfirm.addActionListener(new DeleteProfileConfirm(user));
             generalPanel.add(buttonPanel);
         }
         if(code==LOG_OUT){
@@ -88,7 +87,6 @@ public class PopUpManager extends JFrame
      * Constructs a popup that confirms if the user really wants to delete a product
      * @param bilBook the bilbook object
      * @param product product that's going to be erased.
-     * @return the popup as a frame.
      */
     public static void deleteProductPopup(BilBook bilBook, Product product)
     {
@@ -99,7 +97,6 @@ public class PopUpManager extends JFrame
      * Constructs a popup that confirms if the user really wants to delete their profile
      * @param bilBook the bilbook object
      * @param user user that's going to be erased.
-     * @return the popup as a frame.
      */
     public static void deleteProfilePopup(BilBook bilBook, User user)
     {
@@ -109,7 +106,6 @@ public class PopUpManager extends JFrame
     /**
      * Constructs a popup that confirms if the user wants to log out.
      * @param bilBook the bilbook object
-     * @return the popup as a frame
      */
     public static void logOutPopup(BilBook bilBook)
     {
@@ -119,7 +115,6 @@ public class PopUpManager extends JFrame
     /**
      * Constructs a popup that lets the user send a code to their email. The code can be used to change their password.
      * @param bilBook the bilbook object
-     * @return the popup as a frame
      */
     public static void emailConfirmationPopup(BilBook bilBook)
     {
@@ -152,8 +147,34 @@ public class PopUpManager extends JFrame
         somehowEvenMoreGeneralPanel.add(evenMoreGeneralPanel); somehowEvenMoreGeneralPanel.add(Box.createRigidArea(new Dimension(1, 20)));
         add(somehowEvenMoreGeneralPanel);
         EmailSender.sendVerificationCode(user.getEmail(), code);
+
+        class PasswordChanger implements ActionListener
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(codeFromEmail.getText().equals(code)&&GenericMethods.passwordFieldToString(password).equals(GenericMethods.passwordFieldToString(passwordConfirmation)))
+                {
+                    user.setPassword(GenericMethods.passwordFieldToString(password));
+                    bilBook.changePanel(new logIn());
+                    dispose();
+                }
+                else if(!codeFromEmail.getText().equals(code))
+                {
+                    codeFromEmail.setText("WRONGCODE");
+                }
+                else if(!GenericMethods.passwordFieldToString(password).equals(GenericMethods.passwordFieldToString(passwordConfirmation)))
+                {
+                    codeFromEmail.setText("PASSWORDSDIFFERENT");
+                }
+            }
+        }
+
+        confirm.addActionListener(new PasswordChanger());
     }
 
+    /**
+     * An inner class that gets the given email from the emailsending popup, and creates a passwordchange popup.
+     */
     private class EmailSendingButton implements ActionListener
     {
         @Override
@@ -170,6 +191,9 @@ public class PopUpManager extends JFrame
         }
     }
 
+    /**
+     * An inner class for the notconfirm button that closes the popup.
+     */
     private class NotConfirmButton implements ActionListener
     {
         @Override
@@ -178,6 +202,9 @@ public class PopUpManager extends JFrame
         }
     }
 
+    /**
+     * An inner class for the logout confirm button that performs the action.
+     */
     private class LogOutConfirm implements ActionListener
     {
         @Override
@@ -187,8 +214,36 @@ public class PopUpManager extends JFrame
         }
     }
 
-    public static void main(String[] args) {
-        logOutPopup(new BilBook());
+    private class DeleteProfileConfirm implements ActionListener
+    {
+        private User user;
+
+        public DeleteProfileConfirm(User user)
+        {
+            this.user=user;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bilBook.removeUser(user);
+        }
     }
+
+    private class DeleteProductConfirm implements ActionListener
+    {
+        private Product product;
+
+        public DeleteProductConfirm(Product product)
+        {
+            this.product=product;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            bilBook.removeProduct(product);
+        }
+
+    }
+
     
 }
