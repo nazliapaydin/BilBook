@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -100,7 +101,6 @@ public class Product implements Comparable<Product>
     {
         this.ID=ID;
         this.isBook=isBook;
-        this.onlinePrice=isBook ? PriceScraper.priceScrape(name, author, datePublished.getYear()): 0;
         this.favouritedBy=new ArrayList<>();
     }
 
@@ -159,6 +159,14 @@ public class Product implements Comparable<Product>
         if(!favouritedBy.contains(user))
         {
             favouritedBy.add(user);
+        }
+    }
+
+    public void removeFavouritedBy(User user)
+    {
+        if(favouritedBy.contains(user))
+        {
+            favouritedBy.remove(user);
         }
     }
 
@@ -296,6 +304,11 @@ public class Product implements Comparable<Product>
         return true;
     }
 
+    public boolean isFavouritedBy(User user)
+    {
+        return favouritedBy.contains(user);
+    }
+
     /**
      * Creates a JPanel that shows the basic information about a product object. To be used in scrollpanes.
      * @param isProfilePage a boolean that is true if the panel is to be used in a profile page, false otherwise.
@@ -353,6 +366,7 @@ public class Product implements Comparable<Product>
         {
             rightMostIn.setLayout(new BorderLayout());
             JPanel thrashCan=GenericMethods.imageIntoPanel(GenericMethods.THRASH_CAN);
+            thrashCan.addMouseListener(bilBook.productRemover(this));
             JPanel star;
             if(isSold)
             {
@@ -360,7 +374,11 @@ public class Product implements Comparable<Product>
             }
             else
             {
-                star=GenericMethods.imageIntoPanel(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR);
+                JCheckBox starCheck=new JCheckBox(GenericMethods.NOT_FAVOURITE_STAR, isFavouritedBy(loggedInUser));
+                starCheck.setPressedIcon(GenericMethods.FAVOURITE_STAR);
+                starCheck.addItemListener(bilBook.favouriteListener(this));
+                star=new JPanel();
+                star.add(starCheck);
             }
             rightMostIn.add(thrashCan,BorderLayout.NORTH); rightMostIn.add(star,BorderLayout.CENTER); rightMostIn.add(Box.createRigidArea(new Dimension(GenericMethods.FAVOURITE_STAR.getIconWidth()-10, GenericMethods.FAVOURITE_STAR.getIconWidth()-10)),BorderLayout.SOUTH);
         }
@@ -374,7 +392,11 @@ public class Product implements Comparable<Product>
             }
             else
             {
-                star=GenericMethods.imageIntoPanel(loggedInUser==null ? GenericMethods.NOT_FAVOURITE_STAR:(favouritedBy.contains(loggedInUser) ? GenericMethods.FAVOURITE_STAR : GenericMethods.NOT_FAVOURITE_STAR));
+                JCheckBox starCheck=new JCheckBox(GenericMethods.NOT_FAVOURITE_STAR, loggedInUser!=null && isFavouritedBy(loggedInUser));
+                starCheck.setPressedIcon(GenericMethods.FAVOURITE_STAR);
+                starCheck.addItemListener(bilBook.favouriteListener(this));
+                star=new JPanel();
+                star.add(starCheck);
             }
             rightMostIn.add(star);
         }
@@ -448,6 +470,13 @@ public class Product implements Comparable<Product>
             return (int)Math.signum(-(((onlinePrice/price)-o.onlinePrice/o.price)));
         }
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Product)){return false;}
+        Product p=(Product)obj;
+        return ID==p.ID;
     }
 
 }
