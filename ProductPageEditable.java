@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -17,7 +18,10 @@ public class ProductPageEditable extends JPanel{
     ProductPageEditable(BilBook bilBook, Product product){
         this.bilbook = bilBook;
         this.product = product;
-        setLayout(new GridLayout(2,1));
+        JPanel page = new JPanel();
+        setLayout(new BorderLayout());
+        add(bilbook.createMenuBar(bilBook.getLoggedIn()), BorderLayout.NORTH);
+        page.setLayout(new GridLayout(2,1));
 
         ImageIcon image = GenericMethods.fileToImage(product.getImageFile(), 100);
         JLabel imageLabel = new JLabel(image);
@@ -28,7 +32,7 @@ public class ProductPageEditable extends JPanel{
         container1.add(imageLabel);
         container1.add(featuresPanel);
         container1.add(publisherFeatures);
-        add(container1);
+        page.add(container1);
 
         JPanel description = new JPanel(new GridLayout(2,1));
         JLabel string = new JLabel("Description:");
@@ -62,7 +66,8 @@ public class ProductPageEditable extends JPanel{
         container2.add(description);
         container2.add(prices);
         container2.add(favorite);
-        add(container2);
+        page.add(container2);
+        add(page, BorderLayout.CENTER);
     }
 
     public JPanel featuresLabel(Product product) {
