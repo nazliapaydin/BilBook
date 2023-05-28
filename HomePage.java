@@ -16,7 +16,7 @@ public class HomePage extends JPanel{
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         scrollPane = new ScrollPane();
         JPanel searchMenu = bilbook.createSortPanel(false);
-        add(bilbook.createMenuBar(bilbook.getLoggedIn()));
+        add(bilbook.createMenuBar());
         add(searchMenu);
         add(scrollPane);
         products = bilbook.getProducts();

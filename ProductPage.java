@@ -2,6 +2,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -60,6 +63,7 @@ public class ProductPage extends JPanel{
         JPanel favorite = new JPanel();
         JCheckBox star = new JCheckBox(starImageOff);
         star.setSelectedIcon(starImageOn);
+        star.addItemListener(bilbook.favouriteListener(product));
         favorite.add(star);
         favorite.setPreferredSize(new Dimension(50, 50));
 
@@ -75,7 +79,7 @@ public class ProductPage extends JPanel{
         JLabel label1 = new JLabel("Name of the book: " + product.getName());
         JLabel label2 = new JLabel("Author of the book: " + product.getAuthor());
         JLabel label3 = product.isBook() ? new JLabel("Year published: " + product.getDatePublished()) : new JLabel("Year written: " + product.getDatePublished());
-        JLabel label4 = new JLabel("Price: " + product.getPrice());
+        JLabel label4 = new JLabel("Price: " + (int)product.getPrice() + " tl");
         JLabel label5 = new JLabel("Lecture: " + product.getCourseDepartment() + " " + product.getCourseCode());
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5,1));
@@ -98,13 +102,34 @@ public class ProductPage extends JPanel{
         panel.add(imageLabel);
         panel.add(info1);
         panel.add(info2);
-        if(product.getUserID() == bilbook.getLoggedIn().getID()) {
-            JButton edit = new JButton("Edit");
-            JButton sold = new JButton("Sold");
-            JButton delete = new JButton("Delete");
-            panel.add(edit);
-            panel.add(sold);
-            panel.add(delete);
+        JButton edit = new JButton("Edit");
+        edit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bilbook.changePanel(new ProductPageEditable(bilbook, product));
+                
+            }
+        });
+        JButton sold = new JButton("Sold");
+        sold.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(product.isSold() == false) {
+                    product.sell();
+                } else {
+                    product.reverseSell();
+                }
+            }
+        });
+        JButton delete = new JButton("Delete");
+        delete.addActionListener(bilbook.productRemoverForJButton(product));
+        panel.add(edit);
+        panel.add(sold);
+        panel.add(delete);
+        if(product.getUserID() != bilbook.getLoggedIn().getID()) {
+            edit.setEnabled(false);
+            sold.setEnabled(false);
+            delete.setEnabled(false);
         }
         return panel;
     }

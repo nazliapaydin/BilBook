@@ -269,6 +269,10 @@ public class Product implements Comparable<Product>
         isSold=true;
     }
 
+    public void reverseSell() {
+        isSold=false;
+    }
+
     /**
      * Sends an email notification to all the users who favourited this product.
      */

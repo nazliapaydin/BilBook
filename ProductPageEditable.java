@@ -2,6 +2,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -19,6 +21,13 @@ public class ProductPageEditable extends JPanel{
 
     BilBook bilbook;
     Product product;
+    JTextField textField1;
+    JTextField textField2;
+    JTextField textField3;
+    JTextField textField4;
+    JComboBox<String> departments;
+    JComboBox<String> codes;
+
 
     ProductPageEditable(BilBook bilBook, Product product){
         this.bilbook = bilBook;
@@ -64,6 +73,7 @@ public class ProductPageEditable extends JPanel{
         JPanel favorite = new JPanel();
         JCheckBox star = new JCheckBox(starImageOff);
         star.setSelectedIcon(starImageOn);
+        star.addItemListener(bilbook.favouriteListener(product));
         favorite.add(star);
         favorite.setPreferredSize(new Dimension(50, 50));
 
@@ -81,12 +91,12 @@ public class ProductPageEditable extends JPanel{
         JLabel label3 = product.isBook() ? new JLabel("Year published: ") : new JLabel("Year written: ");
         JLabel label4 = new JLabel("Price: ");
         JLabel label5 = new JLabel("Lecture: ");
-        JTextField textField1 = new JTextField();
-        JTextField textField2 = new JTextField();
-        JTextField textField3 = new JTextField();
-        JTextField textField4 = new JTextField(" tl");
-        JComboBox<String> departments=new JComboBox<>(datasOfLectures.lectures); 
-        JComboBox<String> codes=new JComboBox<>(datasOfLectures.getCodes(0)); 
+        textField1 = new JTextField();
+        textField2 = new JTextField();
+        textField3 = new JTextField();
+        textField4 = new JTextField(" tl");
+        departments=new JComboBox<>(datasOfLectures.lectures); 
+        codes=new JComboBox<>(datasOfLectures.getCodes(0)); 
         codes.setEnabled(false);
         departments.addItemListener(new  ItemListener()
         {
@@ -137,8 +147,31 @@ public class ProductPageEditable extends JPanel{
         panel.add(info2);
         
         JButton save = new JButton("Save");
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                product.setName(textField1.getText());
+                product.setAuthor(textField2.getText());
+                product.setDatePublished(GenericMethods.createDate("1,1," + textField3.getText()));
+                product.setPrice(Float.parseFloat(textField4.getText()));
+                product.setCourseDepartment((String)departments.getSelectedItem());
+                product.setCourseCode(Integer.parseInt((String)codes.getSelectedItem()));
+                bilbook.changePanel(new ProductPage(bilbook, product));
+            }
+        });
         JButton sold = new JButton("Sold");
+        sold.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(product.isSold() == false) {
+                    product.sell();
+                } else {
+                    product.reverseSell();
+                }
+            }
+        });
         JButton delete = new JButton("Delete");
+        delete.addActionListener(bilbook.productRemoverForJButton(product));
         panel.add(save);
         panel.add(sold);
         panel.add(delete);
