@@ -2,10 +2,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -80,7 +85,26 @@ public class ProductPageEditable extends JPanel{
         JTextField textField2 = new JTextField();
         JTextField textField3 = new JTextField();
         JTextField textField4 = new JTextField(" tl");
-        //combo box eklencek
+        JComboBox<String> departments=new JComboBox<>(datasOfLectures.lectures); 
+        JComboBox<String> codes=new JComboBox<>(datasOfLectures.getCodes(0)); 
+        codes.setEnabled(false);
+        departments.addItemListener(new  ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                int department=departments.getSelectedIndex();
+                if(department==0)
+                {
+                    codes.setEnabled(false);
+                }
+                else
+                {
+                    DefaultComboBoxModel<String> model= new DefaultComboBoxModel<>(datasOfLectures.getCodes(department));
+                    codes.setModel(model);
+                    codes.setEnabled(true);
+                }
+            }
+        });
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5,2));
@@ -93,7 +117,10 @@ public class ProductPageEditable extends JPanel{
         panel.add(label4);
         panel.add(textField4);
         panel.add(label5);
-        //combo box eklencek
+        JPanel combo = new JPanel(new GridLayout(1,2));
+        combo.add(departments);
+        combo.add(codes);
+        panel.add(combo);
         return panel;
     }
     
