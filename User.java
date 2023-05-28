@@ -25,6 +25,11 @@ public class User
     private static ArrayList<Integer> uniqueIDList = new ArrayList<Integer>();
     private ArrayList<Product> products;
 
+    public User()
+    {
+        //Constructor for tests
+    }
+    
     /**
      * @param username
      * @param dateCreated
@@ -198,7 +203,7 @@ public class User
         products.remove(product);
     }
 
-    public ArrayList<Product> getproducts()
+    public ArrayList<Product> getProducts()
     {
         return GenericMethods.copyOf(products);
     }
@@ -211,7 +216,15 @@ public class User
     @Override
     public String toString() 
     {
-        return "Name: " + getName() + " | Surname: " + getSurname() + " |  ID: " + getID() + " | Username: " + getUsername() + " | Email: " + getEmail() + " | Phone Number: " + getPhoneNumber(); //TODO 
+        return "Name: " + getName() + " | Surname: " + getSurname() + " |  ID: " + getID() + " | Username: " + getUsername() + " | Email: " + getEmail() + " | Phone Number: " + getPhoneNumber(); 
+    }
+
+    public boolean equals(Object obj) 
+    {
+        if(!(obj instanceof User))
+        {return false;}
+        User user=(User)obj;
+        return ID == user.ID;
     }
 
 }
