@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.ScrollPane;
 import java.util.ArrayList;
 import javax.swing.BoxLayout;
@@ -13,12 +14,13 @@ public class HomePage extends JPanel{
     HomePage(BilBook bilbook){
         this.bilbook = bilbook;
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        scrollPane = new ScrollPane();
         JPanel searchMenu = bilbook.createSortPanel(false);
         add(bilbook.createMenuBar(bilbook.getLoggedIn()));
         add(searchMenu);
+        add(scrollPane);
         products = bilbook.getProducts();
-        scrollPane = new ScrollPane();
-        scrollPane.setPreferredSize(new Dimension(1500, 600));
+        scrollPane.setMinimumSize(new Dimension(1500, 600));
     }
 
     public void sortBooks(boolean showBooks, boolean showNotes, String courseDepartment, int courseCode, String searchBar, boolean showOnlyFavourites, boolean dontShowSold, String sortMethod){
@@ -38,7 +40,7 @@ public class HomePage extends JPanel{
             Product.sort(productsToBeShown, Product.DATE_DESCENDING);
         } else if(sortMethod.equals("Profit %")) {
             Product.sort(productsToBeShown, Product.INTERNETPRICE_PRICE_RATIO);
-        } else if(sortMethod.equals("Random%")) {
+        } else if(sortMethod.equals("Random")) {
             Product.sort(productsToBeShown, Product.RANDOM);
         } 
         JPanel panel = new JPanel();
@@ -46,7 +48,9 @@ public class HomePage extends JPanel{
         for (Product product : productsToBeShown) {
             panel.add(product.createPanel(false, bilbook.getLoggedIn(), bilbook));
         }
-        scrollPane.removeAll();
+
+        panel.setMinimumSize(new Dimension(1500, 600));
+        panel.removeAll();
         scrollPane.add(panel);
 
     }
