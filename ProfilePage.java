@@ -8,6 +8,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +46,7 @@ public class ProfilePage extends JPanel
     {
         bilBook = current;
         currUser = user;
+        this.setLayout(new BorderLayout());
 
         if(bilBook.getLoggedIn() != null)
         { isLoggedIn = false; }
@@ -52,23 +56,24 @@ public class ProfilePage extends JPanel
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS)); //for the scrollPane
 
-        menuBar = bilBook.createMenuBar(bilBook.getLoggedIn());
+        menuBar = bilBook.createMenuBar();
         searchPanel = createSearchPanel();
         credentials = createCredentialsPanel();
-        profilePic = createProfilePic();
+        profilePic = createProfilePic();        
+
+        //MANAGE LAYOUTS
+        add(menuBar, BorderLayout.NORTH);
+        JPanel userInfo = new JPanel(new FlowLayout());
+        userInfo.add(profilePic);
+        userInfo.add(credentials);
 
         if(isLoggedIn)
         {
             profileControl = createProfileControlButtons();
-            add(profileControl); //Don't forget to arrange layout
+            userInfo.add(profileControl);
         }
-        
-
-        //MANAGE LAYOUTS
-        add(menuBar);
-        add(credentials); //Edit layout of the panel itself
-        add(profilePic);
-        add(searchPanel);
+        add(userInfo, BorderLayout.CENTER);
+        add(searchPanel, BorderLayout.SOUTH); //1000*500
 
     }
 
@@ -78,15 +83,17 @@ public class ProfilePage extends JPanel
     private JPanel createSearchPanel() 
     {
         JPanel searchPanel = new JPanel();
+        searchPanel.setMaximumSize(new Dimension(1000, 400));
+        searchPanel.setLayout(new BorderLayout());
         searchmenu = bilBook.createSortPanel(true);
         for (Product product : currUser.getProducts()) 
         {
             panel.add(product.createPanel(true, bilBook.getLoggedIn(), bilBook));
         }
 
-        searchPanel.add(searchmenu);
+        searchPanel.add(searchmenu, BorderLayout.NORTH);
         scrollPane.add(panel);
-        searchPanel.add(scrollPane);
+        searchPanel.add(scrollPane, BorderLayout.SOUTH);
 
         return searchPanel;
     }
@@ -144,7 +151,7 @@ public class ProfilePage extends JPanel
     {
         profilePic = new JPanel();
         image = new JLabel();
-        image.setIcon(GenericMethods.fileToImage(currUser.getImageFile(), 100)); //CHANGE SIZE TODO
+        image.setIcon(GenericMethods.fileToImage(currUser.getImageFile(), 200));
         image.setName("");
         profilePic.add(image);
 
@@ -229,46 +236,74 @@ public class ProfilePage extends JPanel
     private JPanel createCredentialsPanel()
     {
         JPanel credentials = new JPanel();
-        credentials.setLayout(new GridLayout(9,2));
-
-        JLabel header = new JLabel("Account Information");
         JLabel filler = new JLabel();
-        JLabel usernameLabel = new JLabel("Username: ");
-        JTextField usernameField = new JTextField(currUser.getUsername());
-        JLabel nameLabel = new JLabel("Name: " + currUser.getName());
-        JTextField nameField = new JTextField(currUser.getName());
-        JLabel surnameLabel = new JLabel("Surname: ");
-        JTextField surnameField = new JTextField(currUser.getSurname());
-        JLabel phoneNumberLabel = new JLabel("Phone Number: ");
-        JTextField phoneNumberField = new JTextField(currUser.getPhoneNumber());
-        JLabel emailLabel = new JLabel("Email: ");
-        JTextField emailField = new JTextField(currUser.getEmail());
-        JLabel totalItemsLabel = new JLabel("Total Number of Items: ");
-        JTextField totalItemsField = new JTextField(currUser.getNumOfTotalItems());
-        JLabel soldItemsLabel = new JLabel("Number of Sold Items: ");
-        JTextField soldItemsField = new JTextField(currUser.getNumOfSoldItems());
-        credentials.add(header); credentials.add(filler);
-        credentials.add(usernameLabel); credentials.add(usernameField);
-        credentials.add(nameLabel); credentials.add(nameField);
-        credentials.add(surnameLabel); credentials.add(surnameField);
-        credentials.add(phoneNumberLabel); credentials.add(phoneNumberField);
-        credentials.add(emailLabel); credentials.add(emailField);
-        credentials.add(totalItemsLabel); credentials.add(totalItemsField);
-        credentials.add(soldItemsLabel); credentials.add(soldItemsField);
-
-        if(editable==true)
+        credentials.setMaximumSize(new Dimension(300, 200));
+        
+        if(!editable)
         {
+            credentials.setLayout(new GridLayout(8,1));
+            JLabel header = new JLabel("Account Information");
+            JLabel usernameLabel = new JLabel("Username: " + currUser.getUsername());
+            JLabel nameLabel = new JLabel("Name: " + currUser.getName());
+            JLabel surnameLabel = new JLabel("Surname: " + currUser.getSurname());
+            JLabel phoneNumberLabel = new JLabel("Phone Number: " + currUser.getPhoneNumber());
+            JLabel emailLabel = new JLabel("Email: " + currUser.getEmail());
+            JLabel totalItemsLabel = new JLabel("Total Number of Items: " + currUser.getNumOfTotalItems());
+            JLabel soldItemsLabel = new JLabel("Number of Sold Items: " + currUser.getNumOfSoldItems());
+            credentials.add(header);
+            credentials.add(usernameLabel);
+            credentials.add(nameLabel);
+            credentials.add(surnameLabel);
+            credentials.add(phoneNumberLabel);
+            credentials.add(emailLabel);
+            credentials.add(totalItemsLabel);
+            credentials.add(soldItemsLabel);
+        }
+        else
+        {
+            credentials.setLayout(new GridLayout(8,2));
+            JLabel header = new JLabel("Edit Account Information");
+            JLabel usernameLabel = new JLabel("Username: ");
+            JTextField usernameField = new JTextField(currUser.getUsername()); usernameField.setEditable(true);
+            JLabel nameLabel = new JLabel("Name: ");
+            JTextField nameField = new JTextField(currUser.getName()); nameField.setEditable(true);
+            JLabel surnameLabel = new JLabel("Surname: ");
+            JTextField surnameField = new JTextField(currUser.getSurname()); surnameField.setEditable(true);;
+            JLabel phoneNumberLabel = new JLabel("Phone Number: ");
+            JTextField phoneNumberField = new JTextField(currUser.getPhoneNumber()); phoneNumberField.setEditable(true);
+            JLabel emailLabel = new JLabel("Email: ");
+            JTextField emailField = new JTextField(currUser.getEmail()); emailField.setEditable(true);
+            credentials.add(header); credentials.add(filler);
+            credentials.add(usernameLabel); credentials.add(usernameField);
+            credentials.add(nameLabel); credentials.add(nameField);
+            credentials.add(surnameLabel); credentials.add(surnameField);
+            credentials.add(phoneNumberLabel); credentials.add(phoneNumberField);
+            credentials.add(emailLabel); credentials.add(emailField);
             JLabel passwordLabel = new JLabel("New Password: ");
             JPasswordField passwordField = new JPasswordField();
+            JButton saveButton = new JButton("Save Profile");
+            saveButton.setBackground(GenericMethods.GREAT_COLOR);
             credentials.add(passwordLabel); credentials.add(passwordField);
-            usernameField.setEditable(editable);
-            nameField.setEditable(editable);
-            surnameField.setEditable(editable);
-            phoneNumberField.setEditable(editable);
-            emailField.setEditable(editable);
-            //TODO change variabled by getText()
+            credentials.add(filler); credentials.add(saveButton);
 
-        }
+            class SaveListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    currUser.setUsername(usernameField.getText());
+                    currUser.setName(nameField.getText());
+                    currUser.setSurname(surnameField.getText());
+                    currUser.setPhoneNumber(phoneNumberField.getText());
+                    currUser.setMail(emailField.getText());
+                    currUser.setPassword(GenericMethods.passwordFieldToString(passwordField));
+                    DatabaseControl.updateUser(currUser);
+                    editable = false;
+                }
+                
+            }
+            saveButton.addActionListener(new SaveListener());            
+        }   
         return credentials;
     }
     
