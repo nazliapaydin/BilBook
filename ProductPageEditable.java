@@ -25,16 +25,16 @@ public class ProductPageEditable extends JPanel{
         this.product = product;
         JPanel page = new JPanel();
         setLayout(new BorderLayout());
-        add(bilbook.createMenuBar(bilBook.getLoggedIn()), BorderLayout.NORTH);
+        add(bilbook.createMenuBar(), BorderLayout.NORTH);
         page.setLayout(new GridLayout(2,1));
 
-        ImageIcon image = GenericMethods.fileToImage(product.getImageFile(), 100);
-        JLabel imageLabel = new JLabel(image);
+        GenericMethods.ChangeableImage image = GenericMethods.createChangeableImage();
+        image.loadImage(product.getImageFile());
         JPanel featuresPanel = featuresLabel(product);
         JPanel publisherFeatures = publisherFeatures(product);
         JPanel container1 = new JPanel();
         container1.setLayout(new FlowLayout());
-        container1.add(imageLabel);
+        container1.add(image);
         container1.add(featuresPanel);
         container1.add(publisherFeatures);
         page.add(container1);
@@ -125,14 +125,14 @@ public class ProductPageEditable extends JPanel{
     }
     
     public JPanel publisherFeatures(Product product) {
-        ImageIcon image = GenericMethods.fileToImage(product.getUser().getImageFile(), 80);
-        JLabel imageLabel = new JLabel(image);
+        GenericMethods.ChangeableImage image = GenericMethods.createChangeableImage();
+        image.loadImage(product.getUser().getImageFile());
         JLabel info1 = new JLabel("Phone Number: " + product.getUser().getPhoneNumber());
         JLabel info2 = new JLabel("Email Address: " + product.getUser().getEmail());
         
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.add(imageLabel);
+        panel.add(image);
         panel.add(info1);
         panel.add(info2);
         

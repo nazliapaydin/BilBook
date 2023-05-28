@@ -20,7 +20,7 @@ public class ProductPage extends JPanel{
         this.product = product;
         JPanel page = new JPanel();
         setLayout(new BorderLayout());
-        add(bilbook.createMenuBar(bilBook.getLoggedIn()), BorderLayout.NORTH);
+        add(bilbook.createMenuBar(), BorderLayout.NORTH);
         page.setLayout(new GridLayout(2,1));
 
         ImageIcon image = GenericMethods.fileToImage(product.getImageFile(), 100);
