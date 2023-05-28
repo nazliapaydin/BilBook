@@ -14,9 +14,11 @@ public class HomePage extends JPanel{
         this.bilbook = bilbook;
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         JPanel searchMenu = bilbook.createSortPanel(false);
+        add(bilbook.createMenuBar(bilbook.getLoggedIn()));
         add(searchMenu);
         products = bilbook.getProducts();
         scrollPane = new ScrollPane();
+        scrollPane.setPreferredSize(new Dimension(1500, 600));
     }
 
     public void sortBooks(boolean showBooks, boolean showNotes, String courseDepartment, int courseCode, String searchBar, boolean showOnlyFavourites, boolean dontShowSold, String sortMethod){
