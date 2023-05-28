@@ -68,6 +68,7 @@ public class ProductPage extends JPanel{
         container2.add(prices);
         container2.add(favorite);
         page.add(container2);
+        add(page, BorderLayout.CENTER);
     }
 
     public JPanel featuresLabel(Product product) {
