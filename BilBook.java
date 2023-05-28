@@ -1,4 +1,8 @@
+package src;
+
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -10,9 +14,12 @@ import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -66,10 +73,111 @@ public class BilBook extends JFrame
         //TODO
     }
 
-    public JPanel createMenuBar()
+    /**
+     * Creates the top bar and arranged the buttons on the top menu according to loggedIn user.
+     * Author: Nazlı Apaydın
+     * @param loggedInUser
+     * @return The Top Menu bar to be used in multiple classes
+     * 
+     */
+    public JPanel createMenuBar(User loggedInUser)
     {
-        //TODO
-        return new JPanel();
+        Color background = new Color(47,49,50);
+        JPanel menuBar = new JPanel();
+        menuBar.setBackground(background);
+        menuBar.setPreferredSize(new Dimension(1619, 100)); //CHANGE TODO
+        JPanel topButtons = new JPanel();
+        topButtons.setBackground(background);
+        JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        logoPanel.setBackground(background);
+        ImageIcon logoIcon = new ImageIcon("logo.png");
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoPanel.add(logoLabel);
+
+        if(loggedInUser == null)
+        {
+            //log in button
+            JButton logInButton = new JButton();
+            logInButton.setBackground(GenericMethods.GREAT_COLOR);
+            class LogInListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    changePanel(new logIn());
+                }
+                
+            }            
+            logInButton.addActionListener(new LogInListener());
+            topButtons.add(logInButton);
+
+            //sign up button
+            JButton signUpButton = new JButton();
+            signUpButton.setBackground(GenericMethods.GREAT_COLOR);
+            class SignUpListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    changePanel(new signUp());
+                }
+                
+            }            
+            signUpButton.addActionListener(new SignUpListener());
+            topButtons.add(signUpButton);
+        }
+        else //if it is loggedIn
+        {
+            //view profile button
+            JButton viewProfile = new JButton("View Profile");
+            viewProfile.setBackground(GenericMethods.GREAT_COLOR);
+            class ViewProfileListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    changePanel(new ProfilePage(BilBook.this, loggedInUser));
+                }
+                
+            }            
+            viewProfile.addActionListener(new ViewProfileListener());
+            topButtons.add(viewProfile);
+
+            //create advert button
+            JButton createAdvertButton = new JButton("Create Advert");
+            createAdvertButton.setBackground(GenericMethods.GREAT_COLOR);
+            class CreateAdvertButtonListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    changePanel(new createAdvert());
+                }
+                
+            }            
+            createAdvertButton.addActionListener(new CreateAdvertButtonListener());
+            topButtons.add(createAdvertButton);
+
+            //log out button
+            JButton logOutButton = new JButton("Log Out");
+            logOutButton.setBackground(GenericMethods.GREAT_COLOR);
+            class LogOutButtonListener implements ActionListener
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) 
+                {
+                    PopUpManager.logOutPopup(BilBook.this);
+                }
+                
+            }            
+            logOutButton.addActionListener(new LogOutButtonListener());
+            topButtons.add(logOutButton);
+
+        }
+
+        menuBar.add(logoPanel);
+        menuBar.add(topButtons);
+        return menuBar;
     }
 
     /**
@@ -425,7 +533,7 @@ public class BilBook extends JFrame
     public void removeUser(User user)
     {
         users.remove(user);
-        ArrayList<Product> userProducts=user.getproducts();
+        ArrayList<Product> userProducts=user.getProducts();
         for(int i=0;i<userProducts.size();i++)
         {
             removeProduct(userProducts.get(i));
@@ -447,43 +555,6 @@ public class BilBook extends JFrame
         }
     }
 
-        /**
-     * A method that tries to login using the username and password.
-     * Author: Ata Uzay Kuzey
-     * @param username the username of the user
-     * @param password the password of the user
-     * @return true if login is successful, false otherwise.
-     */
-    public boolean logIn(String username, String password)
-    {
-        for(User user: users)
-        {
-            if(user.getUsername().equals(username)&&user.getPassword().equals(password))
-            {
-                logIn(user);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * A method to determine if the username and email are used by a user.
-     * @param username the username to be checked
-     * @param email the email to be checked
-     * @return true if there are no users with the same username or email, false otherwise.
-     */
-    public boolean allowSignUp(String username, String email)
-    {
-        for(User user: users)
-        {
-            if(user.getUsername().equals(username)||user.getEmail().equals(email))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static void main(String[] args) {
         BilBook bilBook=new BilBook();
