@@ -447,6 +447,43 @@ public class BilBook extends JFrame
         }
     }
 
+        /**
+     * A method that tries to login using the username and password.
+     * Author: Ata Uzay Kuzey
+     * @param username the username of the user
+     * @param password the password of the user
+     * @return true if login is successful, false otherwise.
+     */
+    public boolean logIn(String username, String password)
+    {
+        for(User user: users)
+        {
+            if(user.getUsername().equals(username)&&user.getPassword().equals(password))
+            {
+                logIn(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * A method to determine if the username and email are used by a user.
+     * @param username the username to be checked
+     * @param email the email to be checked
+     * @return true if there are no users with the same username or email, false otherwise.
+     */
+    public boolean allowSignUp(String username, String email)
+    {
+        for(User user: users)
+        {
+            if(user.getUsername().equals(username)||user.getEmail().equals(email))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void main(String[] args) {
         BilBook bilBook=new BilBook();
