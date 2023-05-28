@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import javax.swing.ImageIcon;
@@ -11,6 +10,8 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +47,7 @@ public class GenericMethods
     {
         Collections.sort(arrayList);
     }
+
 
     /**
      * Creates a file chooser for the user to choose a file.
@@ -444,5 +446,73 @@ public class GenericMethods
             return date.day==day&&date.month==month&&date.year==year;
         }
     }
+
+    /**
+     * A method that creates a ChangeableImage object
+     * @return the ChangeableImage
+     */
+    public static ChangeableImage createChangeableImage()
+    {
+        return new ChangeableImage();
+    }
+
+    /**
+     * A class that reprents a changeableimage panel. The image inside can be changed by clicking on the panel.
+     */
+    public static class ChangeableImage extends JPanel
+    {
+        private JLabel label;
+        private ImageIcon image;
+        private File file;
+
+        public ChangeableImage()
+        {
+            image=GenericMethods.fileToImage(new File("default_photo.png"), 280);
+            label=new JLabel(image);
+            add(label);
+            addMouseListener(new PhotoChanger());
+        }
+
+        /**
+         * A method to load an image inside the panel.
+         * @param file the file for the image to be loaded.
+         */
+        public void loadImage(File file)
+        {
+            image=file==null?GenericMethods.fileToImage(new File("default_photo.png"), 280):GenericMethods.fileToImage(file, 280);
+            this.file=file;
+            label.setIcon(image);
+            updateUI();
+        }
+
+        public File getImage()
+        {
+            return file;
+        }
+
+        /**
+         * A mouselistener class to understand that the panel has been clicked.
+         */
+        private class PhotoChanger implements MouseListener
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                loadImage(GenericMethods.chooseFile());
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        }
+    }
+
 
 }
