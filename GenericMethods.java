@@ -258,7 +258,7 @@ public class GenericMethods
      */
     public static double stringSimilarity(String target, String insideString)
     {
-        if(insideString.equals(""))
+        if(insideString.equals("")||insideString==null)
         {
             return 1;
         }
