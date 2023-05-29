@@ -2,14 +2,12 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -49,11 +47,11 @@ public class BilBook extends JFrame
         datasOfLectures.getDepartments();
         setSize(1619, 906);
         setTitle("BilBook");
+        setIconImage((new ImageIcon("icon.png")).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         products=DatabaseControl.getProducts();
         users=DatabaseControl.getUsers();
-        currentPanel=new HomePage(this);
-        add(currentPanel);
+        changePanel(new HomePage(this));
     }
 
     /**
@@ -63,14 +61,23 @@ public class BilBook extends JFrame
      */
     public void changePanel(JPanel panel)
     {
-        remove(currentPanel);
+        getContentPane().removeAll();
         currentPanel=panel;
-        add(panel);
+        getContentPane().add(currentPanel);
+        revalidate();
+        repaint();
     }
 
     public void refreshPage()
     {
-        //TODO
+        if(currentPanel instanceof HomePage)
+        {
+            changePanel(new HomePage(this));
+        }
+        else if(currentPanel instanceof ProfilePage)
+        {
+            changePanel(new ProfilePage(this, ((ProfilePage) currentPanel).getUser()));
+        }
     }
 
     /**
@@ -86,55 +93,52 @@ public class BilBook extends JFrame
         Color background = new Color(47,49,50);
         JPanel menuBar = new JPanel(new BorderLayout());
         menuBar.setBackground(background);
-        menuBar.setPreferredSize(new Dimension(1619, 200)); //CHANGE TODO
-        JPanel topButtons = new JPanel();
+        menuBar.setMaximumSize(new Dimension(1619, 200));
+        JPanel topButtons = new JPanel(new BorderLayout());
         topButtons.setBackground(background);
-        JPanel logoPanel = new JPanel();
-        logoPanel.setBackground(background);
-        ImageIcon logoIcon = new ImageIcon("logo.png");
-        JLabel logoLabel = new JLabel(logoIcon);
-        logoPanel.add(logoLabel);
+        topButtons.setMaximumSize(new Dimension(800, 200));
+        JPanel logoPanel = createLogo();
 
         if(loggedInUser == null)
         {
             //log in button
             JButton logInButton = new JButton("Log In");
             logInButton.setBackground(GenericMethods.GREAT_COLOR);
-            logInButton.setSize(100, 60);
+            logInButton.setMaximumSize(new Dimension(200, 100));
             class LogInListener implements ActionListener
             {
                 @Override
                 public void actionPerformed(ActionEvent e) 
                 {
-                    changePanel(new logIn());
+                    changePanel((new logIn(BilBook.this)).getPanel());
                 }
                 
             }            
             logInButton.addActionListener(new LogInListener());
-            topButtons.add(logInButton);
+            topButtons.add(logInButton, BorderLayout.CENTER);
 
             //sign up button
             JButton signUpButton = new JButton("Sign Up");
             signUpButton.setBackground(GenericMethods.GREAT_COLOR);
-            signUpButton.setSize(100, 60);
+            signUpButton.setMaximumSize(new Dimension(200, 100));
             class SignUpListener implements ActionListener
             {
                 @Override
                 public void actionPerformed(ActionEvent e) 
                 {
-                    changePanel(new signUp());
+                    changePanel((new signUp(BilBook.this)).getPanel());
                 }
                 
             }            
             signUpButton.addActionListener(new SignUpListener());
-            topButtons.add(signUpButton);
+            topButtons.add(signUpButton, BorderLayout.EAST);
         }
         else //if it is loggedIn
         {
             //view profile button
             JButton viewProfile = new JButton("View Profile");
             viewProfile.setBackground(GenericMethods.GREAT_COLOR);
-            viewProfile.setSize(100, 60);
+            viewProfile.setMaximumSize(new Dimension(200, 100));
             class ViewProfileListener implements ActionListener
             {
                 @Override
@@ -145,28 +149,28 @@ public class BilBook extends JFrame
                 
             }            
             viewProfile.addActionListener(new ViewProfileListener());
-            topButtons.add(viewProfile);
+            topButtons.add(viewProfile,BorderLayout.WEST);
 
             //create advert button
             JButton createAdvertButton = new JButton("Create Advert");
             createAdvertButton.setBackground(GenericMethods.GREAT_COLOR);
-            createAdvertButton.setSize(100, 60);
+            createAdvertButton.setMaximumSize(new Dimension(200, 100));
             class CreateAdvertButtonListener implements ActionListener
             {
                 @Override
                 public void actionPerformed(ActionEvent e) 
                 {
-                    changePanel(new createAdvert());
+                    changePanel((new createAdvert(BilBook.this)).getPanel());
                 }
                 
             }            
             createAdvertButton.addActionListener(new CreateAdvertButtonListener());
-            topButtons.add(createAdvertButton);
+            topButtons.add(createAdvertButton, BorderLayout.CENTER);
 
             //log out button
             JButton logOutButton = new JButton("Log Out");
             logOutButton.setBackground(GenericMethods.GREAT_COLOR);
-            logOutButton.setSize(100, 60);
+            logOutButton.setMaximumSize(new Dimension(200, 100));
             class LogOutButtonListener implements ActionListener
             {
                 @Override
@@ -177,7 +181,7 @@ public class BilBook extends JFrame
                 
             }            
             logOutButton.addActionListener(new LogOutButtonListener());
-            topButtons.add(logOutButton);
+            topButtons.add(logOutButton, BorderLayout.EAST);
 
         }
 
@@ -236,11 +240,7 @@ public class BilBook extends JFrame
         return GenericMethods.copyOf(products);
     }
 
-    @Override
-    protected void processWindowEvent(WindowEvent e) {
-        DatabaseControl.closeConnection();
-        super.processWindowEvent(e);
-    }
+
 
     /**
      * A method that makes the current panel change it's shown products according to the given criteria. It does not do anything unless the current panel
@@ -269,10 +269,7 @@ public class BilBook extends JFrame
      */
     public void logIn(User user)
     {
-        if(loggedInUser==null)
-        {
-            loggedInUser=user;
-        }
+        loggedInUser=user;
     }
 
     /**
@@ -328,7 +325,7 @@ public class BilBook extends JFrame
             books.addItemListener(new SortChange()); notes.addItemListener(new SortChange()); departments.addItemListener(new SortChange());
             codes.addItemListener(new SortChange()); sortMethods.addItemListener(new SortChange()); 
             searchBar.getDocument().addDocumentListener(new TextChange());
-            changeScrollPane(this);
+            setMaximumSize(new Dimension(1600, 200));
         }
 
         public boolean allowBooks()
@@ -349,7 +346,7 @@ public class BilBook extends JFrame
         public int getSelectedCode()
         {
             if(!codes.isEnabled()){return 0;}
-            return Integer.valueOf((String)codes.getSelectedItem());
+            return codes.getSelectedIndex()==0? 0: Integer.valueOf((String)codes.getSelectedItem());
         }
 
         public String getSortMethod()
@@ -494,16 +491,19 @@ public class BilBook extends JFrame
                     if(starCheck.isSelected())
                     {
                         product.addFavouritedBy(loggedInUser);
+                        starCheck.setIcon(GenericMethods.FAVOURITE_STAR);
                     }
                     else
                     {
                         product.removeFavouritedBy(loggedInUser);
+                        starCheck.setIcon(GenericMethods.NOT_FAVOURITE_STAR);
                     }
+                    DatabaseControl.updateProduct(product);
                 }
                 else
                 {
                     starCheck.setSelected(false);
-                    changePanel(new logIn());
+                    changePanel((new logIn(BilBook.this)).getPanel());
                 }
 
             }
@@ -521,6 +521,7 @@ public class BilBook extends JFrame
         products.remove(product);
         loggedInUser.removeProduct(product);
         DatabaseControl.removeProduct(product);
+        product.notifyFavouritedUsers();
         if(currentPanel instanceof ProductPage)
         {
             changePanel(new HomePage(this));
@@ -561,7 +562,7 @@ public class BilBook extends JFrame
         }
     }
 
-        /**
+    /**
      * A method that tries to login using the username and password.
      * Author: Ata Uzay Kuzey
      * @param username the username of the user
@@ -598,6 +599,69 @@ public class BilBook extends JFrame
         }
         return true;
     }
+
+    public void addProduct(Product product)
+    {
+        products.add(product);
+        DatabaseControl.addToDataBase(product);
+    }
+
+    public void addUser(User user)
+    {
+        users.add(user);
+        DatabaseControl.addToDataBase(user);
+    }
+
+    public JPanel createLogo()
+    {
+        JPanel logoPanel=new JPanel();
+        logoPanel.setBackground(new Color(47,49,50));
+        logoPanel.add(new JLabel(new ImageIcon("logo.png")));
+        class GoToHome implements MouseListener
+        {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                changePanel(new HomePage(BilBook.this));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        }
+        logoPanel.addMouseListener(new GoToHome());
+        return logoPanel;
+    }
+
+    public MouseListener panelChanger(JPanel panel)
+    {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                changePanel(panel);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        };
+    }
+
 
     public static void main(String[] args) {
         BilBook bilBook=new BilBook();
