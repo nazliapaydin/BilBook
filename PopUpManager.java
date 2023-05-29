@@ -1,5 +1,6 @@
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,6 +43,7 @@ public class PopUpManager extends JFrame
     private PopUpManager(int code, BilBook bilBook, Product product, User user)
     {
         this.bilBook=bilBook;
+        setIconImage((new ImageIcon("icon.png")).getImage());
         setSize(400,200);
         setLocationRelativeTo(null);
         setTitle("Confirmation");
@@ -129,6 +131,7 @@ public class PopUpManager extends JFrame
      */
     private PopUpManager(User user, String code, BilBook bilBook)
     {
+        setIconImage((new ImageIcon("icon.png")).getImage());
         setSize(400,200);
         setLocationRelativeTo(null);
         setTitle("Password Changer");
@@ -155,7 +158,8 @@ public class PopUpManager extends JFrame
                 if(codeFromEmail.getText().equals(code)&&GenericMethods.passwordFieldToString(password).equals(GenericMethods.passwordFieldToString(passwordConfirmation)))
                 {
                     user.setPassword(GenericMethods.passwordFieldToString(password));
-                    bilBook.changePanel(new logIn());
+                    DatabaseControl.updateUser(user);
+                    bilBook.changePanel((new logIn(bilBook)).getPanel());
                     dispose();
                 }
                 else if(!codeFromEmail.getText().equals(code))
@@ -226,6 +230,7 @@ public class PopUpManager extends JFrame
         @Override
         public void actionPerformed(ActionEvent e) {
             bilBook.removeUser(user);
+            dispose();
         }
     }
 
@@ -241,6 +246,7 @@ public class PopUpManager extends JFrame
         @Override
         public void actionPerformed(ActionEvent e) {
             bilBook.removeProduct(product);
+            dispose();
         }
 
     }
