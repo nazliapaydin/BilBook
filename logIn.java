@@ -1,7 +1,5 @@
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -11,8 +9,8 @@ import java.awt.Color;
 import java.awt.event.*;
 
 public class logIn extends JPanel implements ActionListener{
-	//private Bilbook bilbook;
-	JPasswordField textOfUsername;
+	private BilBook bilbook;
+	JTextField textOfUsername;
 	JPasswordField textOfPassword;
 	JButton buttonForLogIn;
 	JButton buttonForSignUp;
@@ -21,20 +19,22 @@ public class logIn extends JPanel implements ActionListener{
 	JLabel labelForUserName;
 	JLabel labelForPassword;
 	JLabel labelForNewAccount;
-	JLabel labelForImage;
+	JPanel panelForImage;
 	JButton buttonForForgottenPassword;
 	String username;
 	String password;
 	JLabel labelForInvalidUsername;
 	JLabel labelForInvalidPassword;
-	public logIn(/*Bilbook bilbook*/)
+	public logIn(BilBook bilbook)
 	{
-		//this.bilbook=bilbook
+		this.bilbook=bilbook;
+		frameOfLogIn();
+		panel.setBackground(new Color(234, 234, 234));
 	}
 	public  void frameOfLogIn()
 	{
 		panel = new JPanel();
-        textOfUsername=new JPasswordField();
+        textOfUsername=new JTextField();
         textOfPassword=new JPasswordField();
         buttonForLogIn=new JButton();
         buttonForSignUp=new JButton();
@@ -42,23 +42,20 @@ public class logIn extends JPanel implements ActionListener{
         labelForUserName=new JLabel();
         labelForPassword=new JLabel();
         labelForNewAccount=new JLabel();
-		labelForImage=new JLabel();
+		panelForImage=bilbook.createLogo();
+		panelForImage.setBounds(150, 220, 570, 200);
         buttonForForgottenPassword=new JButton();
 
-		ImageIcon BilBookImage = new ImageIcon("BilBookImage.png");
-		labelForImage.setBounds(280, 400, 346, 147);
-		labelForImage.setIcon(BilBookImage);
-
         textOfUsername.addActionListener(this);
-		textOfUsername.setBounds(720,420,200,30);
+		textOfUsername.setBounds(860,290,200,30);
 		textOfUsername.setFont(new Font("Comic Sans",Font.BOLD,20));
 
         textOfPassword.addActionListener(this);
-		textOfPassword.setBounds(720,470,200,30);
+		textOfPassword.setBounds(860,340,200,30);
 		textOfPassword.setFont(new Font("Comic Sans",Font.BOLD,20));
 
         buttonForLogIn = new JButton();
-		buttonForLogIn.setBounds(640, 550, 300, 40);
+		buttonForLogIn.setBounds(780, 380, 300, 40);
 		buttonForLogIn.addActionListener(this);
 		buttonForLogIn.setText("Log In!");
 		buttonForLogIn.setFocusable(false);
@@ -71,7 +68,7 @@ public class logIn extends JPanel implements ActionListener{
 		buttonForLogIn.setBorder(BorderFactory.createEtchedBorder());
 
         buttonForSignUp = new JButton();
-		buttonForSignUp.setBounds(820, 595, 100, 25);
+		buttonForSignUp.setBounds(960, 430, 100, 25);
 		buttonForLogIn.addActionListener(this);
 		buttonForSignUp.setText("Sign up");
 		buttonForSignUp.setFocusable(false);
@@ -83,7 +80,7 @@ public class logIn extends JPanel implements ActionListener{
 		buttonForSignUp.setBorder(BorderFactory.createEtchedBorder());
 
         buttonForForgottenPassword = new JButton();
-		buttonForForgottenPassword.setBounds(650, 630, 300, 30);
+		buttonForForgottenPassword.setBounds(780, 460, 300, 30);
 		buttonForForgottenPassword.addActionListener(this);
 		buttonForForgottenPassword.setText("Forgotten Your Password");
 		buttonForForgottenPassword.setFocusable(false);
@@ -98,27 +95,27 @@ public class logIn extends JPanel implements ActionListener{
 		buttonForForgottenPassword.setBorder(BorderFactory.createEtchedBorder());
 
 		labelForLogIn.setText("Log In");
-		labelForLogIn.setBounds(640,300,250,100);
+		labelForLogIn.setBounds(780,200,250,100);
 		labelForLogIn.setVisible(true);
 		labelForLogIn.setForeground(Color.cyan);
 		labelForLogIn.setFont(new Font("New York Times",Font.BOLD,20));
 
 		labelForUserName.setText("Username: ");
-		labelForUserName.setBounds(640,380,150,100);
+		labelForUserName.setBounds(780,250,150,100);
 		labelForUserName.setVisible(true);
 
 		labelForPassword.setText("Password: ");
-		labelForPassword.setBounds(640,430,150,100);
+		labelForPassword.setBounds(780,300,150,100);
 		labelForPassword.setVisible(true);
 
 		labelForNewAccount.setText("Do not have an account? ");
-		labelForNewAccount.setBounds(660,580,150,50);
+		labelForNewAccount.setBounds(800,420,150,50);
 		labelForNewAccount.setVisible(true);
-
+		buttonForSignUp.addActionListener(this);
 
         //panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		panel.setLayout(null);
-		panel.setBounds(300,250,700,600);
+		panel.setBounds(420,130,700,600);
         panel.setBackground(Color.gray);
 		panel.setVisible(true);
 		panel.add(textOfUsername);
@@ -130,15 +127,8 @@ public class logIn extends JPanel implements ActionListener{
         panel.add(labelForPassword);
         panel.add(labelForNewAccount);
         panel.add(buttonForForgottenPassword);
-		panel.add(labelForImage);
+		panel.add(panelForImage);
 	}
-    
-    public static void main(String[] args) {
-		logIn login = new logIn();
-		login.frameOfLogIn();
-
-
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) 
@@ -147,12 +137,8 @@ public class logIn extends JPanel implements ActionListener{
 		{
 			boolean validuUsername=true;
 			boolean validPassword=true;
-			/*
-			 * TO DO
-			 * IMPLEMENT THESE PASSWORD FIELD TO GENERIC METHODS
-			 */
 			username=textOfUsername.getText();
-			password=textOfPassword.getText();
+			password=GenericMethods.passwordFieldToString(textOfPassword);
 			if(username==null)
 			{
 				labelForInvalidUsername = new JLabel();
@@ -163,7 +149,7 @@ public class logIn extends JPanel implements ActionListener{
 				validuUsername=false;
 
 			}
-			if(password==null)
+			else if(password==null)
 			{
 				labelForInvalidPassword = new JLabel();
 				labelForInvalidPassword.setText("Invalid password ");
@@ -172,21 +158,35 @@ public class logIn extends JPanel implements ActionListener{
 				panel.add(labelForInvalidPassword);
 				validPassword=false;
 			}
-			if(validPassword&&validuUsername)
+			else if(validPassword&&validuUsername)
 			{
-
+				if(bilbook.logIn(username, password))
+				{
+					bilbook.changePanel(new HomePage(bilbook));
+				}
+				else
+				{
+					labelForInvalidPassword = new JLabel();
+					labelForInvalidPassword.setText("Invalid password or username");
+					labelForInvalidPassword.setBounds(720,470,200,30);
+					labelForInvalidPassword.setVisible(true);
+					panel.add(labelForInvalidPassword);
+					validPassword=false;
+				}
 			}
 		}
 		if(e.getSource()==buttonForSignUp)
 		{
-
+			bilbook.changePanel((new signUp(bilbook)).getPanel());
 		}
 		if(e.getSource()==buttonForForgottenPassword)
 		{
-
+			PopUpManager.emailConfirmationPopup(bilbook);
 		}
     }
 	
-
+	public JPanel getPanel() {
+		return panel;
+	}
    
 }
