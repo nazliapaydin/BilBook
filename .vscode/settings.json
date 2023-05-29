@@ -2,6 +2,9 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "activation.jar",
-        "mail.jar"
+        "mail.jar",
+        "jsoup-1.16.1.jar",
+        "mysql-connector-java-8.0.20.jar",
+        "org.json.jar"
     ]
 }
