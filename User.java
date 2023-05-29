@@ -1,9 +1,6 @@
-package src;
-
 import java.io.File;
 import java.util.ArrayList;
 
-import src.GenericMethods.Date;
 
 /**
  * A class to represent a User object.
@@ -18,7 +15,7 @@ public class User
     private int numOfSoldItems;
     private int numOfTotalItems;
     private String username;
-    private Date dateCreated;
+    private GenericMethods.Date dateCreated;
     private String phoneNumber;
     private String mail;
     private File profilePic;
@@ -37,7 +34,7 @@ public class User
      * @param mail
      * @param image
      */
-    public User(String name, String surname, String username, String password, Date dateCreated, String phoneNumber, String mail, File image)
+    public User(String name, String surname, String username, String password, GenericMethods.Date dateCreated, String phoneNumber, String mail, File image)
     {
         this.name = name;
         this.surname = surname;
@@ -69,6 +66,7 @@ public class User
     {
         this.ID = ID;
         uniqueIDList.add(this.ID);
+        products=new ArrayList<>();
     }
 
     //getters
@@ -112,7 +110,7 @@ public class User
         return  this.profilePic;
     }
 
-    public Date getDateCreated()
+    public GenericMethods.Date getDateCreated()
     {
         return this.dateCreated;
     }
@@ -143,7 +141,7 @@ public class User
         this.password = password;
     }
 
-    public void setDateCreated(Date date)
+    public void setDateCreated(GenericMethods.Date date)
     {
         this.dateCreated = date;
     }
