@@ -1,5 +1,3 @@
-package src;
-
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -18,8 +16,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-import src.BilBook.SearchMenu;
-
 public class ProfilePage extends JPanel
 {
     //constructor parameters
@@ -31,7 +27,7 @@ public class ProfilePage extends JPanel
     JButton editProfile;
     JButton deleteProfile;
     JLabel image;
-    SearchMenu searchmenu;
+    BilBook.SearchMenu searchmenu;
     JScrollPane scrollPane;
     JPanel panel;
 
@@ -90,7 +86,7 @@ public class ProfilePage extends JPanel
         {
             panel.add(product.createPanel(true, bilBook.getLoggedIn(), bilBook));
         }
-
+        scrollPane=new JScrollPane();
         searchPanel.add(searchmenu, BorderLayout.NORTH);
         scrollPane.add(panel);
         searchPanel.add(scrollPane, BorderLayout.SOUTH);
@@ -307,5 +303,9 @@ public class ProfilePage extends JPanel
         return credentials;
     }
     
+    public User getUser() {
+        return currUser;
+    }
     
 }
+
