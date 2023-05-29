@@ -74,6 +74,7 @@ public class ProductPageEditable extends JPanel{
         JCheckBox star = new JCheckBox(starImageOff);
         star.setSelectedIcon(starImageOn);
         star.addItemListener(bilbook.favouriteListener(product));
+        star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
         favorite.add(star);
         favorite.setPreferredSize(new Dimension(50, 50));
 
@@ -91,13 +92,12 @@ public class ProductPageEditable extends JPanel{
         JLabel label3 = product.isBook() ? new JLabel("Year published: ") : new JLabel("Year written: ");
         JLabel label4 = new JLabel("Price: ");
         JLabel label5 = new JLabel("Lecture: ");
-        textField1 = new JTextField();
-        textField2 = new JTextField();
-        textField3 = new JTextField();
-        textField4 = new JTextField(" tl");
-        departments=new JComboBox<>(datasOfLectures.lectures); 
-        codes=new JComboBox<>(datasOfLectures.getCodes(0)); 
-        codes.setEnabled(false);
+        textField1 = new JTextField(product.getName(), 10);
+        textField2 = new JTextField(product.getAuthor(),10);
+        textField3 = new JTextField(product.getDatePublished().getYear()+"",10);
+        textField4 = new JTextField(product.getPrice()+"", 10);
+        departments=new JComboBox<>(datasOfLectures.lectures); departments.setSelectedItem(product.getCourseDepartment());
+        codes=new JComboBox<>(datasOfLectures.getCodes(departments.getSelectedIndex())); codes.setSelectedItem(product.getCourseCode());
         departments.addItemListener(new  ItemListener()
         {
             @Override
@@ -152,11 +152,13 @@ public class ProductPageEditable extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 product.setName(textField1.getText());
                 product.setAuthor(textField2.getText());
-                product.setDatePublished(GenericMethods.createDate("1,1," + textField3.getText()));
+                product.setDatePublished(GenericMethods.createDate("1/1/" + textField3.getText()));
                 product.setPrice(Float.parseFloat(textField4.getText()));
                 product.setCourseDepartment((String)departments.getSelectedItem());
-                product.setCourseCode(Integer.parseInt((String)codes.getSelectedItem()));
+                product.setCourseCode(codes.getSelectedItem().equals("ALL")? 0 :Integer.parseInt((String)codes.getSelectedItem()));
                 bilbook.changePanel(new ProductPage(bilbook, product));
+                DatabaseControl.updateProduct(product);
+                product.notifyFavouritedUsers();
             }
         });
         JButton sold = new JButton("Sold");
@@ -168,6 +170,8 @@ public class ProductPageEditable extends JPanel{
                 } else {
                     product.reverseSell();
                 }
+                DatabaseControl.updateProduct(product);
+                product.notifyFavouritedUsers();
             }
         });
         JButton delete = new JButton("Delete");
