@@ -62,6 +62,7 @@ public class ProductPage extends JPanel{
         ImageIcon starImageOn = GenericMethods.FAVOURITE_STAR;
         JPanel favorite = new JPanel();
         JCheckBox star = new JCheckBox(starImageOff);
+        star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
         star.setSelectedIcon(starImageOn);
         star.addItemListener(bilbook.favouriteListener(product));
         favorite.add(star);
@@ -119,6 +120,7 @@ public class ProductPage extends JPanel{
                 } else {
                     product.reverseSell();
                 }
+                DatabaseControl.updateProduct(product);
             }
         });
         JButton delete = new JButton("Delete");
@@ -126,7 +128,7 @@ public class ProductPage extends JPanel{
         panel.add(edit);
         panel.add(sold);
         panel.add(delete);
-        if(product.getUserID() != bilbook.getLoggedIn().getID()) {
+        if(bilbook.getLoggedIn()!=null && product.getUserID() != bilbook.getLoggedIn().getID()) {
             edit.setEnabled(false);
             sold.setEnabled(false);
             delete.setEnabled(false);
