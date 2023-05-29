@@ -1,6 +1,7 @@
 import java.awt.Dimension;
 import java.awt.ScrollPane;
 import java.util.ArrayList;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
@@ -21,6 +22,7 @@ public class HomePage extends JPanel{
         add(scrollPane);
         products = bilbook.getProducts();
         scrollPane.setMinimumSize(new Dimension(1500, 600));
+        sortBooks(true, true, "ALL", 0, "", false, false, "Price ▲");
     }
 
     public void sortBooks(boolean showBooks, boolean showNotes, String courseDepartment, int courseCode, String searchBar, boolean showOnlyFavourites, boolean dontShowSold, String sortMethod){
@@ -45,14 +47,22 @@ public class HomePage extends JPanel{
         } 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+        panel.add(Box.createRigidArea(new Dimension(1, 20)));
+        ArrayList<JPanel> panels=new ArrayList<>();
         for (Product product : productsToBeShown) {
-            panel.add(product.createPanel(false, bilbook.getLoggedIn(), bilbook));
+            JPanel current=product.createPanel(false, bilbook.getLoggedIn(), bilbook);
+            panels.add(current);
+            panel.add(current);
         }
-
+        scrollPane.removeAll();
+        scrollPane.validate();
         panel.setMinimumSize(new Dimension(1500, 600));
-        panel.removeAll();
         scrollPane.add(panel);
-
+        for(JPanel current: panels)
+        {
+            current.updateUI();
+        }
     }
 
 }
+
