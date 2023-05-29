@@ -74,7 +74,10 @@ public class ProductPageEditable extends JPanel{
         JCheckBox star = new JCheckBox(starImageOff);
         star.setSelectedIcon(starImageOn);
         star.addItemListener(bilbook.favouriteListener(product));
-        star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
+        //star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
+        if(product.isFavouritedBy(bilBook.getLoggedIn())) {
+            star.setSelected(true);
+        }
         favorite.add(star);
         favorite.setPreferredSize(new Dimension(50, 50));
 
@@ -172,7 +175,7 @@ public class ProductPageEditable extends JPanel{
                 }
                 DatabaseControl.updateProduct(product);
                 product.notifyFavouritedUsers();
-            }
+             }
         });
         JButton delete = new JButton("Delete");
         delete.addActionListener(bilbook.productRemoverForJButton(product));

@@ -62,7 +62,10 @@ public class ProductPage extends JPanel{
         ImageIcon starImageOn = GenericMethods.FAVOURITE_STAR;
         JPanel favorite = new JPanel();
         JCheckBox star = new JCheckBox(starImageOff);
-        star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
+        //star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
+        if(product.isFavouritedBy(bilBook.getLoggedIn())) {
+            star.setSelected(true);
+        }
         star.setSelectedIcon(starImageOn);
         star.addItemListener(bilbook.favouriteListener(product));
         favorite.add(star);
