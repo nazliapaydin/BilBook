@@ -43,6 +43,7 @@ public class Product implements Comparable<Product>
     public static final int INTERNETPRICE_PRICE_RATIO=14;
     public static final int RANDOM=31;
     private static int currentSort=11;
+    private static boolean isRandom=false;
 
 
     /**
@@ -269,10 +270,6 @@ public class Product implements Comparable<Product>
         isSold=true;
     }
 
-    public void reverseSell() {
-        isSold=false;
-    }
-
     /**
      * Sends an email notification to all the users who favourited this product.
      */
@@ -301,7 +298,7 @@ public class Product implements Comparable<Product>
         if(!showBooks&&isBook){return false;}
         if(!showNotes&&!isBook){return false;}
         if(!courseDepartment.equals("ALL")&&!courseDepartment.equals(this.courseDepartment)){return false;}
-        if(courseCode!=0&&courseCode!=this.courseCode&&!courseDepartment.equals("OTHER")&&!courseDepartment.equals("ALL")){return false;}
+        if(courseCode!=0&&courseCode!=this.courseCode&&!courseDepartment.equals("ALL")){return false;}
         if(GenericMethods.stringSimilarity(this.name, searchBar)<0.75){return false;}
         if(showOnlyFavourites&&!favouritedBy.contains(loggedInUser)){return false;}
         if(dontShowSold&&isSold){return false;}
@@ -326,6 +323,7 @@ public class Product implements Comparable<Product>
         panel.setLayout(new BorderLayout());
         panel.setBorder(BorderFactory.createRaisedSoftBevelBorder());
         JPanel bookImage=GenericMethods.imageIntoPanel(GenericMethods.fileToImage(image,150));
+        bookImage.addMouseListener(bilBook.panelChanger(new ProductPage(bilBook, this)));
         JPanel leftPanel=new JPanel();leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS)); leftPanel.add(Box.createRigidArea(new Dimension(20, 1))); leftPanel.add(bookImage);
         JPanel bookInformation=new JPanel(new GridLayout(9,1));
         JLabel name=new JLabel(this.name+" ("+datePublished+")"); JLabel course=new JLabel(courseDepartment+(courseCode==0 ? "" : courseCode)); 
@@ -359,6 +357,7 @@ public class Product implements Comparable<Product>
         if(!isProfilePage)
         {
             JPanel profilePic=GenericMethods.imageIntoPanel(GenericMethods.fileToImage(user.getImageFile(), 140));
+            profilePic.addMouseListener(bilBook.panelChanger(new ProfilePage(bilBook, this.user)));
             rightPanel.add(profilePic,BorderLayout.CENTER);
         }
 
@@ -380,6 +379,8 @@ public class Product implements Comparable<Product>
             {
                 JCheckBox starCheck=new JCheckBox(GenericMethods.NOT_FAVOURITE_STAR, isFavouritedBy(loggedInUser));
                 starCheck.setPressedIcon(GenericMethods.FAVOURITE_STAR);
+                starCheck.setSelected(isFavouritedBy(loggedInUser));
+                starCheck.setIcon(isFavouritedBy(loggedInUser) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
                 starCheck.addItemListener(bilBook.favouriteListener(this));
                 star=new JPanel();
                 star.add(starCheck);
@@ -399,6 +400,7 @@ public class Product implements Comparable<Product>
                 JCheckBox starCheck=new JCheckBox(GenericMethods.NOT_FAVOURITE_STAR, loggedInUser!=null && isFavouritedBy(loggedInUser));
                 starCheck.setPressedIcon(GenericMethods.FAVOURITE_STAR);
                 starCheck.addItemListener(bilBook.favouriteListener(this));
+                starCheck.setIcon(isFavouritedBy(loggedInUser) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
                 star=new JPanel();
                 star.add(starCheck);
             }
@@ -408,7 +410,7 @@ public class Product implements Comparable<Product>
         rightMostOut.add(Box.createRigidArea(new Dimension(20, 1)));
         rightPanel.add(rightMostOut, BorderLayout.EAST);
         panel.add(rightPanel, BorderLayout.EAST);
-        
+        panel.setMaximumSize(new Dimension(1500, 175));
         return panel;
     }
 
@@ -422,7 +424,7 @@ public class Product implements Comparable<Product>
     {
         setUniversalSort(code);
         GenericMethods.sort(arrayList);
-        if(code==RANDOM)
+        if(code==RANDOM&&!isRandom)
         {
             ArrayList<Product> temp=GenericMethods.copyOf(arrayList);
             arrayList.removeAll(arrayList);
@@ -432,6 +434,11 @@ public class Product implements Comparable<Product>
                 arrayList.add(temp.get(i));
                 temp.remove(i);
             }
+            isRandom=true;
+        }
+        else
+        {
+            isRandom=false;
         }
     }
 
@@ -476,6 +483,11 @@ public class Product implements Comparable<Product>
         return 0;
     }
 
+    public void reverseSell()
+    {
+        isSold=false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof Product)){return false;}
@@ -484,3 +496,4 @@ public class Product implements Comparable<Product>
     }
 
 }
+
