@@ -1,7 +1,5 @@
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -10,13 +8,12 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.event.*;
 public class signUp extends JPanel implements ActionListener{
-	//private Bilbook bilbook;
+	private BilBook bilbook;
     JTextField textOfName;
 	JTextField textOfSurname;
     JTextField textOfUsername;
     JTextField textOfEmail;
     JTextField textOfPhoneNumber;
-	JTextField textOfImageLink;
     JPasswordField textOfPassword;
     JPasswordField textOfPasswordAgain;
 	JButton buttonForSignUp;
@@ -32,7 +29,7 @@ public class signUp extends JPanel implements ActionListener{
     JLabel labelForPassword;
 	JLabel labelForPasswordAgain;
 	JLabel labelForAlreadyAccount;
-	JLabel labelForImage;
+	JPanel panelForImage;
 	JButton buttonForForgottenPassword;
     String name;
     String surname;
@@ -50,9 +47,11 @@ public class signUp extends JPanel implements ActionListener{
     JLabel labelForInvalidPasswordAgain;
 
 
-    public signUp(/*Bilbook bilbook*/)
+    public signUp(BilBook bilbook)
     {
-		//this.bilbook=bilbook
+		this.bilbook=bilbook;
+		frameOfSignUp();
+		panel.setBackground(new Color(234, 234, 234));
     }
     public void frameOfSignUp()
     {
@@ -62,7 +61,6 @@ public class signUp extends JPanel implements ActionListener{
         textOfUsername= new JTextField();
         textOfEmail= new JTextField();
         textOfPhoneNumber= new JTextField();
-		textOfImageLink= new JTextField();
         textOfPassword= new JPasswordField();
         textOfPasswordAgain= new JPasswordField();
         buttonForSignUp= new JButton();
@@ -77,46 +75,42 @@ public class signUp extends JPanel implements ActionListener{
         labelForPassword= new JLabel();
         labelForPasswordAgain= new JLabel();
         labelForAlreadyAccount= new JLabel();
-        labelForImage= new JLabel();
         buttonForForgottenPassword= new JButton();
 
 
-        ImageIcon BilBookImage = new ImageIcon("BilBookImage.png");
-		labelForImage.setBounds(150, 220, 346, 147);
-		labelForImage.setIcon(BilBookImage);
+		panelForImage=bilbook.createLogo();
+		panelForImage.setBounds(150, 220, 570, 200);
 
         textOfName.addActionListener(this);
-		textOfName.setBounds(660,142,150,20);
+		textOfName.setBounds(860,142,150,20);
 		textOfName.setFont(new Font("Comic Sans",Font.BOLD,12));
 
         textOfSurname.addActionListener(this);
-		textOfSurname.setBounds(660,190,150,20);
+		textOfSurname.setBounds(860,190,150,20);
 		textOfSurname.setFont(new Font("Comic Sans",Font.BOLD,12));
 
         textOfUsername.addActionListener(this);
-		textOfUsername.setBounds(660,240,150,20);
+		textOfUsername.setBounds(860,240,150,20);
 		textOfUsername.setFont(new Font("Comic Sans",Font.BOLD,12));
 
         textOfEmail.addActionListener(this);
-		textOfEmail.setBounds(660,290,150,20);
+		textOfEmail.setBounds(860,290,150,20);
 		textOfEmail.setFont(new Font("Comic Sans",Font.BOLD,12));
 
         textOfPhoneNumber.addActionListener(this);
-		textOfPhoneNumber.setBounds(660,340,150,20);
+		textOfPhoneNumber.setBounds(860,340,150,20);
 		textOfPhoneNumber.setFont(new Font("Comic Sans",Font.BOLD,12));
 
 
         textOfPassword.addActionListener(this);
-		textOfPassword.setBounds(660,390,150,20);
+		textOfPassword.setBounds(860,390,150,20);
 		textOfPassword.setFont(new Font("Comic Sans",Font.BOLD,12));
 
         textOfPasswordAgain.addActionListener(this);
-		textOfPasswordAgain.setBounds(660,440,150,20);
+		textOfPasswordAgain.setBounds(860,440,150,20);
 		textOfPasswordAgain.setFont(new Font("Comic Sans",Font.BOLD,12));
 
-	
-
-        buttonForSignUp.setBounds(550, 490, 300, 50);
+        buttonForSignUp.setBounds(750, 490, 300, 50);
 		buttonForSignUp.addActionListener(this);
 		buttonForSignUp.setText("Sign Up!");
 		buttonForSignUp.setFocusable(false);
@@ -128,7 +122,7 @@ public class signUp extends JPanel implements ActionListener{
 		buttonForSignUp.setBackground(Color.cyan);
 		buttonForSignUp.setBorder(BorderFactory.createEtchedBorder());
 
-        buttonForLogIn.setBounds(725, 555, 150, 20);
+        buttonForLogIn.setBounds(905, 555, 150, 20);
 		buttonForLogIn.addActionListener(this);
 		buttonForLogIn.setText("Log In");
 		buttonForLogIn.setFocusable(false);
@@ -144,40 +138,40 @@ public class signUp extends JPanel implements ActionListener{
 
         labelForSignUp.setText("Sign up ");
         labelForSignUp.setForeground(Color.cyan);
-		labelForSignUp.setBounds(550,50,150,100);
+		labelForSignUp.setBounds(750,50,150,100);
 		labelForSignUp.setVisible(true);
 		labelForSignUp.setFont(new Font("New York Times",Font.BOLD,35));
 
         labelForName.setText("Name: ");
-		labelForName.setBounds(550,100,100,100);
+		labelForName.setBounds(750,100,100,100);
 		labelForName.setVisible(true);
 
         labelForSurName.setText("Surname: ");
-		labelForSurName.setBounds(550,150,100,100);
+		labelForSurName.setBounds(750,150,100,100);
 		labelForSurName.setVisible(true);
 
         labelForUserName.setText("Username: ");
-		labelForUserName.setBounds(550,200,100,100);
+		labelForUserName.setBounds(750,200,100,100);
 		labelForUserName.setVisible(true);
 
         labelForEmailName.setText("E-Mail: ");
-		labelForEmailName.setBounds(550,250,100,100);
+		labelForEmailName.setBounds(750,250,100,100);
 		labelForEmailName.setVisible(true);
 
         labelForPhoneNumber.setText("Phone Number: ");
-		labelForPhoneNumber.setBounds(550,300,150,100);
+		labelForPhoneNumber.setBounds(750,300,150,100);
 		labelForPhoneNumber.setVisible(true);
 
         labelForPassword.setText("Password: ");
-		labelForPassword.setBounds(550,350,100,100);
+		labelForPassword.setBounds(750,350,100,100);
 		labelForPassword.setVisible(true);
 
         labelForPasswordAgain.setText("Password Again: ");
-		labelForPasswordAgain.setBounds(550,400,150,100);
+		labelForPasswordAgain.setBounds(750,400,150,100);
 		labelForPasswordAgain.setVisible(true);
 
         labelForAlreadyAccount.setText("Already have an account?");
-		labelForAlreadyAccount.setBounds(570,540,160,50);
+		labelForAlreadyAccount.setBounds(750,540,160,50);
 		labelForAlreadyAccount.setVisible(true);
 
 
@@ -207,13 +201,9 @@ public class signUp extends JPanel implements ActionListener{
         panel.add(labelForPassword);
         panel.add(labelForPasswordAgain);
         panel.add(labelForAlreadyAccount);
-        panel.add(labelForImage);
+        panel.add(panelForImage);
         panel.add(buttonForForgottenPassword);
     }
-	public static void main(String[] args) {
-		signUp signnn= new signUp();
-		signnn.frameOfSignUp();
-	}
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==buttonForSignUp)
@@ -224,8 +214,14 @@ public class signUp extends JPanel implements ActionListener{
             username=textOfUsername.getText();
             email=textOfEmail.getText();
             phoneNumber=textOfPhoneNumber.getText();
+
             password=GenericMethods.passwordFieldToString(textOfPassword);
+
             passwordAgain=GenericMethods.passwordFieldToString(textOfPasswordAgain);
+			/*
+			 * TO DO 
+			 * IMPLEMENT THESE PASSWORD FIELD TO GENERIC METHODS
+			 */
 			if(name==null)
 			{
 				labelForInvalidName = new JLabel();
@@ -290,21 +286,37 @@ public class signUp extends JPanel implements ActionListener{
 				panel.add(labelForInvalidPasswordAgain);
 				validation =false;
 			}
-				if(validation&&password.equals(passwordAgain))
+			if(validation)
+			{
+				if(bilbook.allowSignUp(username, email))
 				{
-
+					User user=new User(name, surname, username, password, GenericMethods.getCurrentDate(), phoneNumber, email, null);
+					bilbook.addUser(user);
+					bilbook.changePanel((new logIn(bilbook)).getPanel());
 				}
+				else
+				{
+					labelForInvalidPassword = new JLabel();
+					labelForInvalidPassword.setText("There is someone with identical username or email.");
+					labelForInvalidPassword.setBounds(660,390,150,20);
+					labelForInvalidPassword.setVisible(true);
+					panel.add(labelForInvalidPassword);
+					validation =false;
+				}
+			}
         }
         if(e.getSource()==buttonForLogIn)
         {
-            //Find the code of frame finisher
-            logIn newLogIn = new logIn();
-            newLogIn.frameOfLogIn();
+			bilbook.changePanel((new logIn(bilbook)).getPanel());
         }
         if(e.getSource()==buttonForForgottenPassword)
         {
-
+			PopUpManager.emailConfirmationPopup(bilbook);
         }
         
     }
+
+	public JPanel getPanel() {
+		return panel;
+	}
 }
