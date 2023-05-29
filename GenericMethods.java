@@ -464,11 +464,18 @@ public class GenericMethods
         private JLabel label;
         private ImageIcon image;
         private File file;
+        private int size;
 
         public ChangeableImage()
         {
-            image=GenericMethods.fileToImage(new File("default_photo.png"), 280);
+            this(280);
+        }
+
+        public ChangeableImage(int size)
+        {
+            image=GenericMethods.fileToImage(new File("default_photo.png"), size);
             label=new JLabel(image);
+            this.size=size;
             add(label);
             addMouseListener(new PhotoChanger());
         }
@@ -479,7 +486,7 @@ public class GenericMethods
          */
         public void loadImage(File file)
         {
-            image=file==null?GenericMethods.fileToImage(new File("default_photo.png"), 280):GenericMethods.fileToImage(file, 280);
+            image=file==null?GenericMethods.fileToImage(new File("default_photo.png"), size):GenericMethods.fileToImage(file, size);
             this.file=file;
             label.setIcon(image);
             updateUI();
