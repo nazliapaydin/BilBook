@@ -1,9 +1,7 @@
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -11,7 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.ButtonGroup;
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.event.*;
 public class createAdvert extends JPanel implements ActionListener{
     JPanel panel;
@@ -24,6 +21,7 @@ public class createAdvert extends JPanel implements ActionListener{
     JLabel labelForNameOfItem;
     JLabel labelForAuthorOfItem;
     JLabel labelForYearOfItem;
+    JLabel warning;
     JLabel labelForPriceOfItem;
     JLabel labelForDepartment;
     JLabel labelForCode;
@@ -34,7 +32,7 @@ public class createAdvert extends JPanel implements ActionListener{
     JRadioButton radioButtonNotes;
     JButton buttonForAddingImage;
     ButtonGroup bg;
-    JButton buttonForImage;
+    GenericMethods.ChangeableImage buttonForImage;
     String typeOfItem;
     String name;
     String author;
@@ -48,12 +46,13 @@ public class createAdvert extends JPanel implements ActionListener{
     int index = 0;
     String selectedItem = datasOfLectures.getDepartments()[index];
 
-    // private Bilbook bilbook;
+    private BilBook bilbook;
 
-    public createAdvert(/*Bilbook bilbook*/)
+    public createAdvert(BilBook bilbook)
     {
-        //frameOfCreateAdvert();
-        //this.bilbook=bilbook;
+        this.bilbook=bilbook;
+        frameOfCreateAdvert();
+        panel.setBackground(new Color(238, 238, 238));
     }
     public void frameOfCreateAdvert()
     {
@@ -76,38 +75,33 @@ public class createAdvert extends JPanel implements ActionListener{
         panelForRadioButtons= new JPanel();
         radioButtonBook= new JRadioButton("Book");
         radioButtonNotes= new JRadioButton("Notes");
+        JPanel menuBar=bilbook.createMenuBar();
         bg= new ButtonGroup();
         departmentsList= new JComboBox<>();
         codesList = new JComboBox<>();
-        buttonForImage = new JButton();
+        buttonForImage = GenericMethods.createChangeableImage();
+        warning=new JLabel();
 
-        ImageIcon photoImage = new ImageIcon("Photo.png");
         buttonForImage.setBounds(450, 350, 265, 271);
-        buttonForImage.setIcon(photoImage);
-        buttonForImage.addActionListener(this);
+        
+        menuBar.setBounds(0, 0, bilbook.getWidth(), 200);
 
-
-        textOfNameOfItem.addActionListener(this);
         textOfNameOfItem.setBounds(210,330,150,30);
         textOfNameOfItem.setFont(new Font("Comic Sans",Font.ITALIC,15));
 
-        textOfAuthorOfItem.addActionListener(this);
         textOfAuthorOfItem.setBounds(210,390,150,30);
         textOfAuthorOfItem.setFont(new Font("Comic Sans",Font.ITALIC,15));
 
-        textOfYear.addActionListener(this);
         textOfYear.setBounds(210,450,150,30);
         textOfYear.setFont(new Font("Comic Sans",Font.BOLD,15));
 
-        textOfPrice.addActionListener(this);
         textOfPrice.setBounds(210,510,150,30);
         textOfPrice.setFont(new Font("Comic Sans",Font.BOLD,15));
 
 
 
-
+        warning.setBounds(130, 650, 160, 30);
         buttonForCreateAdvert.setBounds(100, 700, 250, 60);
-        buttonForCreateAdvert.addActionListener(this);
         buttonForCreateAdvert.setText("Create Advert");
         buttonForCreateAdvert.setFocusable(false);
         buttonForCreateAdvert.setHorizontalTextPosition(JButton.CENTER);
@@ -117,21 +111,16 @@ public class createAdvert extends JPanel implements ActionListener{
         buttonForCreateAdvert.setForeground(Color.black);
         buttonForCreateAdvert.setBackground(Color.cyan);
         buttonForCreateAdvert.setBorder(BorderFactory.createEtchedBorder());
-
-
-       
-
-        JRadioButton radioButtonBook = new javax.swing.JRadioButton("Book");
-        JRadioButton radioButtonNotes = new javax.swing.JRadioButton("Notes");
+        radioButtonBook = new javax.swing.JRadioButton("Book");
+        radioButtonNotes = new javax.swing.JRadioButton("Notes");
         bg.add(radioButtonNotes);
         bg.add(radioButtonBook);
         //radioButtonBook.setText("Book");
         //radioButtonNotes.setText("Notes");
-        radioButtonBook.addActionListener(this);
-        radioButtonBook.setFocusable(false);
+        radioButtonBook.setFocusable(false);radioButtonBook.setSelected(true);
         radioButtonBook.setHorizontalTextPosition(JButton.CENTER);
        radioButtonBook.setVerticalTextPosition(JButton.BOTTOM);
-        radioButtonBook.setIconTextGap(-15);
+        radioButtonBook.setIconTextGap(1);
         radioButtonBook.setForeground(Color.black);
         radioButtonBook.setBorder(BorderFactory.createEtchedBorder());
        radioButtonBook.setBounds(130, 260, 100, 50);
@@ -139,17 +128,15 @@ public class createAdvert extends JPanel implements ActionListener{
         radioButtonBook.setVisible(true);
 
 
-        radioButtonNotes.addActionListener(this);
         radioButtonNotes.setFocusable(false);
         radioButtonNotes.setHorizontalTextPosition(JButton.CENTER);
         radioButtonNotes.setVerticalTextPosition(JButton.BOTTOM);
-        radioButtonNotes.setIconTextGap(-15);
+        radioButtonNotes.setIconTextGap(1);
         radioButtonNotes.setForeground(Color.black);
         radioButtonNotes.setBorder(BorderFactory.createEtchedBorder());
         radioButtonNotes.setBounds(250, 260, 100, 50);
         radioButtonNotes.setFont(new Font("New York Times",Font.ITALIC,12));
         radioButtonNotes.setVisible(true);
-        radioButtonNotes.setSelected(true);
 
         
         labelForCreateAdvert.setText("Create Advert ");
@@ -193,6 +180,8 @@ public class createAdvert extends JPanel implements ActionListener{
         panel.setBounds(0,0,1500,1000);
         panel.setBackground(Color.gray);
         panel.setVisible(true);
+        panel.add(menuBar);
+        panel.add(warning);
         panel.add(textOfNameOfItem);
         panel.add(textOfAuthorOfItem);
         panel.add(textOfYear);
@@ -209,10 +198,10 @@ public class createAdvert extends JPanel implements ActionListener{
         panel.add(panelForRadioButtons);
         panel.add(radioButtonBook);
         panel.add(radioButtonNotes);
-      
+        buttonForCreateAdvert.addActionListener(this);
         comboBoxforDepartments(datasOfLectures.getDepartments());
     }
-    public void comboBoxforDepartments(String []departments)
+    public void comboBoxforDepartments(String [] departments)
     {
         departmentsList = new JComboBox<String>(departments);
         //int index = (int)departmentsList.getSelectedIndex();
@@ -253,84 +242,42 @@ public class createAdvert extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String name=textOfNameOfItem.getText();
+        String author=textOfAuthorOfItem.getText();
+        String price=textOfPrice.getText();
+        String year=textOfYear.getText();
+        
+        warning.setBounds(100, 650, 100, 20);
 
-        if(e.getSource()==buttonForImage)
+        if(name==null||author==null||price==null||year==null)
         {
-            labelForImageLink.setText("Link of Image: ");
-            labelForImageLink.setBounds(450,450,150,50);
-            labelForImageLink.setVisible(true);
-
-            textOfImageLink.addActionListener(this);
-            textOfImageLink.setBounds(550,450,150,20);
-            textOfImageLink.setFont(new Font("Comic Sans",Font.BOLD,15));
-
-            buttonForAddingImage.setBounds(710, 450, 250, 60);
-            buttonForAddingImage.addActionListener(this);
-            buttonForAddingImage.setText("Okey");
-            buttonForAddingImage.setFocusable(false);
-            buttonForAddingImage.setHorizontalTextPosition(JButton.CENTER);
-            buttonForAddingImage.setVerticalTextPosition(JButton.BOTTOM);
-            buttonForAddingImage.setFont(new Font("New York Times",Font.ITALIC,12));
-            buttonForAddingImage.setIconTextGap(-15);
-            buttonForAddingImage.setForeground(Color.black);
-            buttonForAddingImage.setBackground(Color.cyan);
-            buttonForAddingImage.setBorder(BorderFactory.createEtchedBorder());
-
-            panel.add(labelForImageLink);
-            panel.add(textOfImageLink);
-            panel.add(buttonForAddingImage);
-            ImageIcon photoOfSource = new ImageIcon(textOfImageLink.getText());
-            /*
-             * ADD EXCEPTIONS
-             */
-            if(e.getSource()==buttonForAddingImage)
+            warning.setText("Please enter all the information!");
+        }
+        else if(GenericMethods.isInappropriate(name+author))
+        {
+            warning.setText("No inappropriate words are allowed!");
+        }
+        else
+        {
+            try
             {
-            labelForImageLink.setVisible(false);
-            textOfImageLink.setVisible(false);
-            buttonForAddingImage.setVisible(false);
-            JLabel labelForPhotoOfSource= new JLabel(); 
-            labelForPhotoOfSource.setBounds(450, 350, 265, 271);
-            labelForPhotoOfSource.setIcon(photoOfSource);
-            panel.add(labelForPhotoOfSource);
+                float pricef=Float.parseFloat(price);
+                int yeari=Integer.parseInt(year);
+
+                Product product=new Product(name, author, GenericMethods.createDate(1, 1, yeari), GenericMethods.getCurrentDate(), pricef, (String)departmentsList.getSelectedItem(), Integer.parseInt((String)codesList.getSelectedItem()), bilbook.getLoggedIn(), radioButtonBook.isSelected() ? true: false, false, buttonForImage.getImage());
+                bilbook.addProduct(product);
+                bilbook.changePanel(new ProductPage(bilbook, product));
             }
+            catch(Exception ee)
+            {
+                warning.setText("Please enter numbers!");
+            }   
         }
 
-        if(radioButtonBook.isSelected()==true)
-        {
-            typeOfItem="Book";
-            System.out.println(typeOfItem);
-        }
-        if(radioButtonNotes.isSelected()==true)
-        {
-            typeOfItem="Notes";
-            System.out.println(typeOfItem);
-        }
-       
-        if(e.getSource()==buttonForCreateAdvert)
-        {
-            name=textOfNameOfItem.getText();
-            author=textOfAuthorOfItem.getText();
-            yearPublished=textOfYear.getText();
-            priceOfTheItem=textOfPrice.getText();
-            System.out.println(name);
-        }
-        if(radioButtonNotes.isSelected()==true)
-        {
-            typeOfItem="Note";
-            System.out.println(typeOfItem);
-        }
-        if(e.getSource()==departmentsList)
-        {
-            departmentOfItem = (String) departmentsList.getSelectedItem();
-        }
-        if(e.getSource()==codesList)
-        {
-            codeOfItem= (String) codesList.getSelectedItem();
-        }
     }
 
-    public static void main(String[] args) {
-        createAdvert advert=new createAdvert();
-        advert.frameOfCreateAdvert();
+    public JPanel getPanel() {
+        return panel;
     }
+
 }
