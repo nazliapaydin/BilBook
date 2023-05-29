@@ -120,11 +120,12 @@ public class DatabaseControl
             preparedStatement.setString(3, user.getUsername());
             preparedStatement.setString(4, user.getDateCreated().toString());
             preparedStatement.setString(5, user.getPassword());
-            preparedStatement.setString(6, user.getPhoneNumber());
-            preparedStatement.setInt(7, user.getNumOfSoldItems());
-            preparedStatement.setInt(8, user.getNumOfTotalItems());
-            preparedStatement.setInt(9, user.getID());
-            preparedStatement.setBytes(10, imageData);
+            preparedStatement.setString(6, user.getEmail());
+            preparedStatement.setString(7, user.getPhoneNumber());
+            preparedStatement.setInt(8, user.getNumOfSoldItems());
+            preparedStatement.setInt(9, user.getNumOfTotalItems());
+            preparedStatement.setInt(10, user.getID());
+            preparedStatement.setBytes(11, imageData);
             preparedStatement.executeUpdate();
             preparedStatement.close();
         }
@@ -202,6 +203,8 @@ public class DatabaseControl
                 User user=new User(resultSet.getInt("ID"));
                 user.setName(resultSet.getString("Name"));
                 user.setSurname(resultSet.getString("Surname"));
+                user.setUsername(resultSet.getString("Username"));
+                user.setPhoneNumber(resultSet.getString("PhoneNumber"));
                 user.setMail(resultSet.getString("Email"));
                 user.setDateCreated(GenericMethods.createDate(resultSet.getString("DateCreated")));
                 user.setPassword(resultSet.getString("Password"));
@@ -234,7 +237,7 @@ public class DatabaseControl
                     }
                     in.close();
                 }
-
+                users.add(user);
             }
         }
         catch(Exception e)
@@ -253,7 +256,6 @@ public class DatabaseControl
         try
         {
             statement.execute("DELETE FROM Products WHERE ID = "+product.getID());
-            products=null;
         }
         catch(Exception e)
         {
@@ -270,7 +272,6 @@ public class DatabaseControl
         try
         {
             statement.execute("DELETE FROM Users WHERE ID = "+user.getID());
-            users=null;
         }
         catch(Exception e)
         {
@@ -297,7 +298,6 @@ public class DatabaseControl
     {
         removeUser(user);
         addToDataBase(user);
-        users=null;
     }
 
     /**
@@ -349,3 +349,4 @@ public class DatabaseControl
         
     }
 }
+
