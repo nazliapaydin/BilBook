@@ -246,7 +246,7 @@ public class signUp extends JPanel implements ActionListener{
 			{
 				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            else if(passwordAgain==null||passwordAgain.equals(""))
+            else if(passwordAgain==null||passwordAgain.equals("")||!passwordAgain.equals(password))
 			{
 				PopUpManager.faultyCreation(bilbook, "Passwords are different.");
 			}

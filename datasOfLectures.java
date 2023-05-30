@@ -65,7 +65,7 @@ public class datasOfLectures {
     public static String[] getDepartments()
     {
         listOfCodes.add(new String[]{"000"}); listOfCodes.add(codesOfACC);  listOfCodes.add(codesOfADA);  listOfCodes.add(codesOfAMER);  listOfCodes.add(codesOfARCH);  listOfCodes.add(codesOfCHEM);  listOfCodes.add(codesOfCI);  listOfCodes.add(codesOfCOMD);  listOfCodes.add(codesOfCS);  listOfCodes.add(codesOfCTIS);  listOfCodes.add(codesOfECON);  listOfCodes.add(codesOfEDEB);  listOfCodes.add(codesOfEEE);  listOfCodes.add(codesOfELIT);  listOfCodes.add(codesOfELS);  listOfCodes.add(codesOfENG);  listOfCodes.add(codesOfFA);  listOfCodes.add(codesOfGE);  listOfCodes.add(codesOfGRA);  listOfCodes.add(codesOfHART);  listOfCodes.add(codesOfHIST);  listOfCodes.add(codesOfHUM);  listOfCodes.add(codesOfIAED);  listOfCodes.add(codesOfIE);  listOfCodes.add(codesOfIR);  listOfCodes.add(codesOfLAUD);  listOfCodes.add(codesOfLAW);  listOfCodes.add(codesOfLNG);  listOfCodes.add(codesOfMAN);  listOfCodes.add(codesOfMATH);  listOfCodes.add(codesOfMBG);  listOfCodes.add(codesOfME);  listOfCodes.add(codesOfMGS);  listOfCodes.add(codesOfMSC);  listOfCodes.add(codesOfPHIL);  listOfCodes.add(codesOfPHYS);  listOfCodes.add(codesOfPOLS);  listOfCodes.add(codesOfPSYC);  listOfCodes.add(codesOfSFL);  listOfCodes.add(codesOfSOC);  listOfCodes.add(codesOfTE);  listOfCodes.add(codesOfTHEA);  listOfCodes.add(codesOfTHM);  listOfCodes.add(codesOfTHR);  listOfCodes.add(codesOfTRIN);
-        listOfCodes.add(codesOfTURK); System.out.println(listOfCodes.get(1));
+        listOfCodes.add(codesOfTURK);
         return lectures;
     }
     public static String [] getCodes(int index)
