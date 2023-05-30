@@ -63,7 +63,7 @@ public class PopUpManager extends JFrame
         if(code==DELETE_PROFILE){
             label.setText("Are you sure you want to delete your profile?");
             JLabel warning=new JLabel("                        This action is irreversable."); warning.setFont(new Font(getName(), Font.PLAIN, 10));
-            generalPanel.add(Box.createRigidArea(new Dimension(1, 40))); generalPanel.add(label); generalPanel.add(warning); notConfirm.addActionListener(new DeleteProfileConfirm(user));
+            generalPanel.add(Box.createRigidArea(new Dimension(1, 40))); generalPanel.add(label); generalPanel.add(warning); confirm.addActionListener(new DeleteProfileConfirm(user));
             generalPanel.add(buttonPanel);
         }
         if(code==LOG_OUT){

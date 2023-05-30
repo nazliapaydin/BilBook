@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class ProfilePage extends JPanel
@@ -150,34 +151,9 @@ public class ProfilePage extends JPanel
     {
         profilePic = new JPanel();
         image = new JLabel();
-        image.setIcon(GenericMethods.fileToImage(currUser.getImageFile(), 200));
+        image.setIcon(currUser.getImageFile()==null ? GenericMethods.fileToImage(new File("profile_default.png"), 200) :GenericMethods.fileToImage(currUser.getImageFile(), 200));
         image.setName("");
         profilePic.add(image);
-
-        class ImageListener implements MouseListener
-        {
-
-            @Override
-            public void mouseClicked(MouseEvent e) 
-            {
-                currUser.setProfilePic(GenericMethods.chooseFile());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-            
-        }
-
-        if(isLoggedIn)
-        {
-            profilePic.addMouseListener(new ImageListener());
-        }
         
         return profilePic;
 
