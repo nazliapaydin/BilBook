@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.xml.crypto.Data;
 
 public class BilBook extends JFrame
 {
@@ -527,7 +526,7 @@ public class BilBook extends JFrame
         products.remove(product);
         loggedInUser.removeProduct(product);
         DatabaseControl.removeProduct(product);
-        product.notifyFavouritedUsers();
+        product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been deleted.");
         if(currentPanel instanceof ProductPage)
         {
             changePanel(new HomePage(this));
@@ -670,7 +669,7 @@ public class BilBook extends JFrame
 
 
     public static void main(String[] args) {
-        BilBook bilBook=new BilBook(); 
+        BilBook bilBook=new BilBook();
         bilBook.setVisible(true);
     }
 }

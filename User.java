@@ -24,11 +24,6 @@ public class User
     private static ArrayList<Integer> uniqueIDList = new ArrayList<Integer>();
     private ArrayList<Product> products;
 
-    public User()
-    {
-        //Constructor for tests
-    }
-    
     /**
      * @param username
      * @param dateCreated

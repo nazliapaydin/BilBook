@@ -75,7 +75,7 @@ public class ProductPage extends JPanel{
             online.setVisible(false);
         }
         JLabel onlineText = new JLabel("Online Price");
-        JLabel onlinePrice = new JLabel(product.getOnlinePrice() + "$");
+        JLabel onlinePrice = new JLabel((product.getOnlinePrice()==-1 ? "Unknown": product.getOnlinePrice()) + "$");
         onlineText.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         onlinePrice.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         online.add(onlineText);
@@ -175,7 +175,7 @@ public class ProductPage extends JPanel{
                 
             }
         });
-        JButton sold = new JButton("Sold");
+        JButton sold = new JButton(product.isSold() == false? "Sold": "Unsell");
         sold.setFocusable(false);
         sold.setBackground(GenericMethods.GREAT_COLOR);
         sold.setBounds(125, 255, 150, 35);
@@ -185,9 +185,12 @@ public class ProductPage extends JPanel{
                 if(product.isSold() == false) {
                     product.sell();
                     sold.setText("Unsell");
+                    product.getUser().changeSoldItems(1);
+                    product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been sold.");
                 } else {
                     product.reverseSell();
                     sold.setText("Sold");
+                    product.getUser().changeSoldItems(-1);
                 }
                 DatabaseControl.updateProduct(product);
             }

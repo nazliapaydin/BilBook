@@ -98,7 +98,7 @@ public class logIn extends JPanel implements ActionListener{
 		labelForLogIn.setBounds(780,200,250,100);
 		labelForLogIn.setVisible(true);
 		labelForLogIn.setForeground(Color.cyan);
-		labelForLogIn.setFont(new Font("New York Times",Font.BOLD,20));
+		labelForLogIn.setFont(new Font("New York Times",Font.BOLD,30));
 
 		labelForUserName.setText("Username: ");
 		labelForUserName.setBounds(780,250,150,100);

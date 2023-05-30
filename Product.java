@@ -273,11 +273,11 @@ public class Product implements Comparable<Product>
     /**
      * Sends an email notification to all the users who favourited this product.
      */
-    public void notifyFavouritedUsers()
+    public void notifyFavouritedUsers(String str)
     {
         for(int i=0;i<favouritedBy.size();i++)
         {
-            EmailSender.sendNotification(favouritedBy.get(i).getEmail(), "One of the items you favourited, "+name+", has changed.");
+            EmailSender.sendNotification(favouritedBy.get(i).getEmail(), str);
         }
     }
 
@@ -326,7 +326,7 @@ public class Product implements Comparable<Product>
         bookImage.addMouseListener(bilBook.panelChanger(new ProductPage(bilBook, this)));
         JPanel leftPanel=new JPanel();leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS)); leftPanel.add(Box.createRigidArea(new Dimension(20, 1))); leftPanel.add(bookImage);
         JPanel bookInformation=new JPanel(new GridLayout(9,1));
-        JLabel name=new JLabel(this.name+" ("+datePublished+")"); JLabel course=new JLabel(courseDepartment+(courseCode==0 ? "" : courseCode)); 
+        JLabel name=new JLabel(this.name+" ("+datePublished.getYear()+")"); JLabel course=new JLabel(courseDepartment+(courseCode==0 ? "" : courseCode)); 
         JLabel date=new JLabel(dateUploaded.toString()); JLabel type=new JLabel("Type: "+ (isBook ? "Book" : "Notes"));
         bookInformation.add(new JLabel()); bookInformation.add(name); bookInformation.add(new JLabel());bookInformation.add(course);bookInformation.add(new JLabel()); bookInformation.add(date); bookInformation.add(new JLabel());bookInformation.add(type);bookInformation.add(new JLabel());
         leftPanel.add(Box.createRigidArea(new Dimension(20, 1)));
@@ -339,7 +339,7 @@ public class Product implements Comparable<Product>
         JLabel price=new JLabel("Price: "+this.price+" ₺");
         if(isBook)
         {   
-            JLabel onlinePrice=new JLabel("Online Price: "+this.onlinePrice+ " ₺");
+            JLabel onlinePrice=new JLabel("Online Price: "+(this.onlinePrice==-1 ? "Unknown": this.onlinePrice)+ " $");
             JLabel information=new JLabel("Contact Information: "+user.getPhoneNumber());
             pricesIn.setLayout(new GridLayout(7, 1));
             pricesIn.add(new JLabel());pricesIn.add(price); pricesIn.add(new JLabel()); pricesIn.add(onlinePrice); pricesIn.add(new JLabel());pricesIn.add(information);pricesIn.add(new JLabel());

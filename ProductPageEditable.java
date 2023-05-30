@@ -207,7 +207,7 @@ public class ProductPageEditable extends JPanel{
                 bilbook.changePanel(new ProductPage(bilbook, product));
                 DatabaseControl.updateProduct(product);
                 DatabaseControl.updateUser(product.getUser());
-                product.notifyFavouritedUsers();
+                product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been changed.");
             }
         });
         JButton sold = new JButton("Sold");
@@ -220,12 +220,14 @@ public class ProductPageEditable extends JPanel{
                 if(product.isSold() == false) {
                     product.sell();
                     sold.setText("Unsell");
+                    product.getUser().changeSoldItems(1);
+                    product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been sold.");
                 } else {
                     product.reverseSell();
+                    product.getUser().changeSoldItems(-1);
                     sold.setText("Sold");
                 }
                 DatabaseControl.updateProduct(product);
-                product.notifyFavouritedUsers();
              }
         });
         JButton delete = new JButton("Delete");

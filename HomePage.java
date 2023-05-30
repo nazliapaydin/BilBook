@@ -22,7 +22,7 @@ public class HomePage extends JPanel{
         add(scrollPane);
         products = bilbook.getProducts();
         scrollPane.setMinimumSize(new Dimension(1500, 600));
-        sortBooks(true, true, "ALL", 0, "", false, false, "Price ▲");
+        sortBooks(true, true, "ALL", 0, "", false, true, "Price ▲");
     }
 
     public void sortBooks(boolean showBooks, boolean showNotes, String courseDepartment, int courseCode, String searchBar, boolean showOnlyFavourites, boolean dontShowSold, String sortMethod){
