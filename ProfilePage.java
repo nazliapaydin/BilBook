@@ -2,6 +2,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,7 +24,7 @@ public class ProfilePage extends JPanel
     User currUser;
 
     boolean isLoggedIn;
-    boolean editable;
+    static boolean editable = false; //TODO
     JButton editProfile;
     JButton deleteProfile;
     JLabel image;
@@ -45,31 +46,31 @@ public class ProfilePage extends JPanel
         this.setLayout(new BorderLayout());
 
         if(bilBook.getLoggedIn() != null)
-        { isLoggedIn = false; }
+        { isLoggedIn = true; }
         else
         { isLoggedIn = false; }
 
-        panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS)); //for the scrollPane
-
-        menuBar = bilBook.createMenuBar();
-        searchPanel = createSearchPanel();
+        menuBar = bilBook.createMenuBar();        
+        profilePic = createProfilePic();
         credentials = createCredentialsPanel();
-        profilePic = createProfilePic();        
-
-        //MANAGE LAYOUTS
+        searchPanel = createSearchPanel();
+        
         add(menuBar, BorderLayout.NORTH);
-        JPanel userInfo = new JPanel(new FlowLayout());
-        userInfo.add(profilePic);
-        userInfo.add(credentials);
+        JPanel page = new JPanel(new GridLayout(2,1));
 
+        JPanel container1 = new JPanel(new FlowLayout());
+        container1.add(profilePic);
+        container1.add(credentials);
         if(isLoggedIn)
         {
             profileControl = createProfileControlButtons();
-            userInfo.add(profileControl);
+            container1.add(profileControl);
         }
-        add(userInfo, BorderLayout.CENTER);
-        add(searchPanel, BorderLayout.SOUTH); //1000*500
+
+        page.add(container1);
+        page.add(searchPanel);
+
+        add(page, BorderLayout.CENTER);
 
     }
 
@@ -79,18 +80,13 @@ public class ProfilePage extends JPanel
     private JPanel createSearchPanel() 
     {
         JPanel searchPanel = new JPanel();
-        searchPanel.setMaximumSize(new Dimension(1000, 400));
-        searchPanel.setLayout(new BorderLayout());
+        searchPanel.setLayout(new GridLayout(2, 1));
         searchmenu = bilBook.createSortPanel(true);
-        for (Product product : currUser.getProducts()) 
-        {
-            panel.add(product.createPanel(true, bilBook.getLoggedIn(), bilBook));
-        }
+        searchPanel.add(searchmenu);
         scrollPane=new JScrollPane();
-        searchPanel.add(searchmenu, BorderLayout.NORTH);
-        scrollPane.add(panel);
-        searchPanel.add(scrollPane, BorderLayout.SOUTH);
-
+        sortBooks(true, true, "ALL", 0, "", false, false, "Price ▲");
+        scrollPane.setMinimumSize(new Dimension(1500, 600));
+        searchPanel.add(scrollPane);
         return searchPanel;
     }
 
@@ -102,6 +98,7 @@ public class ProfilePage extends JPanel
     private JPanel createProfileControlButtons()
     {
         JPanel buttons = new JPanel();
+        buttons.setLayout(new GridLayout(2,1));
 
         //Delete Profile Button
         JButton deleteProfile = new JButton();
@@ -216,13 +213,26 @@ public class ProfilePage extends JPanel
             Product.sort(productsToBeShown, Product.RANDOM);
         } 
 
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+        panel.add(Box.createRigidArea(new Dimension(1, 20)));
+        ArrayList<JPanel> panels=new ArrayList<>();
         for (Product product : productsToBeShown) 
         {
-            panel.add(product.createPanel(false, bilBook.getLoggedIn(), bilBook));
+            JPanel current = product.createPanel(true, bilBook.getLoggedIn(), bilBook);
+            panels.add(current);
+            panel.add(current);
+
         }
 
         scrollPane.removeAll();
+        panel.setMinimumSize(new Dimension(1500, 600));
         scrollPane.add(panel);
+
+        for(JPanel current: panels)
+        {
+            current.updateUI();
+        }
     }
 
     
