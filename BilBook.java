@@ -103,6 +103,7 @@ public class BilBook extends JFrame
         {
             //log in button
             JButton logInButton = new JButton("Log In");
+            logInButton.setFocusable(false);
             logInButton.setBackground(GenericMethods.GREAT_COLOR);
             logInButton.setMaximumSize(new Dimension(200, 100));
             class LogInListener implements ActionListener
@@ -119,6 +120,7 @@ public class BilBook extends JFrame
 
             //sign up button
             JButton signUpButton = new JButton("Sign Up");
+            signUpButton.setFocusable(false);
             signUpButton.setBackground(GenericMethods.GREAT_COLOR);
             signUpButton.setMaximumSize(new Dimension(200, 100));
             class SignUpListener implements ActionListener
@@ -137,6 +139,7 @@ public class BilBook extends JFrame
         {
             //view profile button
             JButton viewProfile = new JButton("View Profile");
+            viewProfile.setFocusable(false);;
             viewProfile.setBackground(GenericMethods.GREAT_COLOR);
             viewProfile.setMaximumSize(new Dimension(200, 100));
             class ViewProfileListener implements ActionListener
@@ -153,6 +156,7 @@ public class BilBook extends JFrame
 
             //create advert button
             JButton createAdvertButton = new JButton("Create Advert");
+            createAdvertButton.setFocusable(false);
             createAdvertButton.setBackground(GenericMethods.GREAT_COLOR);
             createAdvertButton.setMaximumSize(new Dimension(200, 100));
             class CreateAdvertButtonListener implements ActionListener
@@ -169,6 +173,7 @@ public class BilBook extends JFrame
 
             //log out button
             JButton logOutButton = new JButton("Log Out");
+            logOutButton.setFocusable(false);
             logOutButton.setBackground(GenericMethods.GREAT_COLOR);
             logOutButton.setMaximumSize(new Dimension(200, 100));
             class LogOutButtonListener implements ActionListener
