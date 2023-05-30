@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
@@ -44,11 +46,14 @@ public class ProductPage extends JPanel{
         
 
         JPanel description = new JPanel();
-        description.setLayout(new BoxLayout(description, BoxLayout.Y_AXIS));
+        description.setLayout(null);
         JLabel string = new JLabel("Description:");
         string.setFont(font);
-        JTextField descriptionText = new JTextField(product.getDescription(), 5);
-        descriptionText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+        string.setBounds(0, 10, 300, 26);
+        JTextArea descriptionText = new JTextArea(product.getDescription());
+        descriptionText.setLineWrap(true);
+        descriptionText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        descriptionText.setBounds(0, 40, 700, 280);
         descriptionText.setEditable(false);
         description.add(string);
         description.add(descriptionText);
@@ -79,12 +84,12 @@ public class ProductPage extends JPanel{
         ImageIcon starImageOn = GenericMethods.FAVOURITE_STAR;
         JPanel favorite = new JPanel();
         JCheckBox star = new JCheckBox(starImageOff);
+        star.setSelectedIcon(starImageOn);
+        star.addItemListener(bilbook.favouriteListener(product));
         //star.setIcon(product.isFavouritedBy(bilBook.getLoggedIn()) ? GenericMethods.FAVOURITE_STAR: GenericMethods.NOT_FAVOURITE_STAR);
         if(product.isFavouritedBy(bilBook.getLoggedIn())) {
             star.setSelected(true);
         }
-        star.setSelectedIcon(starImageOn);
-        star.addItemListener(bilbook.favouriteListener(product));
         favorite.add(star);
         favorite.setBounds(1350, 450, 100, 100);
 
@@ -105,7 +110,7 @@ public class ProductPage extends JPanel{
         label2.setFont(font);
         JLabel label3 = product.isBook() ? new JLabel("Year published: " + product.getDatePublished()) : new JLabel("Year written: " + product.getDatePublished());
         label3.setFont(font);
-        JLabel label4 = new JLabel("Price: " + (int)product.getPrice() + " tl");
+        JLabel label4 = new JLabel("Price: " + (int)product.getPrice() + "₺");
         label4.setFont(font);
         JLabel label5 = new JLabel("Lecture: " + product.getCourseDepartment() + " " + product.getCourseCode());
         label5.setFont(font);
