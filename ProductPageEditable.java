@@ -1,16 +1,11 @@
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -170,9 +165,8 @@ public class ProductPageEditable extends JPanel{
     }
     
     public JPanel publisherFeatures(Product product) {
-        GenericMethods.ChangeableImage image = GenericMethods.createChangeableImage();
-        image.resizeChangeableImage(150);
-        image.loadImage(product.getUser().getImageFile());
+        GenericMethods.ChangeableImage profileImage = GenericMethods.createChangeableImage(150);
+        profileImage.loadImage(product.getUser().getImageFile());
         JLabel info1 = new JLabel("Phone Number: " + product.getUser().getPhoneNumber());
         info1.setFont(font2);
         JLabel info2 = new JLabel("Email Address: " + product.getUser().getEmail());
@@ -180,8 +174,8 @@ public class ProductPageEditable extends JPanel{
         
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.add(image);
-        image.setBounds(125, 0, 150, 150);
+        panel.add(profileImage);
+        profileImage.setBounds(120, 0, 150, 150);
         panel.add(info1);
         info1.setBounds(0, 165, 400, 15);
         panel.add(info2);
@@ -202,8 +196,10 @@ public class ProductPageEditable extends JPanel{
                 product.setCourseCode(codes.getSelectedItem().equals("ALL")? 0 :Integer.parseInt((String)codes.getSelectedItem()));
                 product.setDescription(descriptionText.getText());
                 product.setImageFile(image.getImage());
+                product.getUser().setProfilePic(profileImage.getImage());
                 bilbook.changePanel(new ProductPage(bilbook, product));
                 DatabaseControl.updateProduct(product);
+                DatabaseControl.updateUser(product.getUser());
                 product.notifyFavouritedUsers();
             }
         });
@@ -216,8 +212,10 @@ public class ProductPageEditable extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 if(product.isSold() == false) {
                     product.sell();
+                    sold.setText("Unsell");
                 } else {
                     product.reverseSell();
+                    sold.setText("Sold");
                 }
                 DatabaseControl.updateProduct(product);
                 product.notifyFavouritedUsers();
