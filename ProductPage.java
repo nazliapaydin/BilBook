@@ -114,7 +114,7 @@ public class ProductPage extends JPanel{
         label1.setFont(font);
         JLabel label2 = new JLabel("Author of the book: " + product.getAuthor());
         label2.setFont(font);
-        JLabel label3 = product.isBook() ? new JLabel("Year published: " + product.getDatePublished()) : new JLabel("Year written: " + product.getDatePublished());
+        JLabel label3 = product.isBook() ? new JLabel("Year published: " + product.getDatePublished().getYear()) : new JLabel("Year written: " + product.getDatePublished().getYear());
         label3.setFont(font);
         JLabel label4 = new JLabel("Price: " + (int)product.getPrice() + "₺");
         label4.setFont(font);
