@@ -67,7 +67,7 @@ public class Product implements Comparable<Product>
         this.courseCode=courseCode;
         this.user=user;
         this.userID=user.getID();
-        this.onlinePrice=isBook ? PriceScraper.priceScrape(name, author, datePublished.getYear()): 0;
+        this.onlinePrice=isBook ? PriceScraper.priceScrape(name, author): 0;
         this.isBook=isBook;
         this.isSold=isSold;
         this.description="";
@@ -152,7 +152,7 @@ public class Product implements Comparable<Product>
 
     public void updateOnlinePrice()
     {
-        this.onlinePrice=PriceScraper.priceScrape(name, author, datePublished.getYear());
+        this.onlinePrice=PriceScraper.priceScrape(name, author);
     }
 
     public void addFavouritedBy(User user)
