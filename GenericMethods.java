@@ -455,6 +455,16 @@ public class GenericMethods
     {
         return new ChangeableImage();
     }
+    
+     /**
+     * A method that creates a ChangeableImage object of size
+     * @param size size of the ChangeableImage
+     * @return the ChangeableImage
+     */
+    public static ChangeableImage createChangeableImage(int size)
+    {
+        return new ChangeableImage(size);
+    }
 
     /**
      * A class that reprents a changeableimage panel. The image inside can be changed by clicking on the panel.
