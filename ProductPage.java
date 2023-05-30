@@ -172,10 +172,13 @@ public class ProductPage extends JPanel{
         panel.add(edit);
         panel.add(sold);
         panel.add(delete);
-        if(bilbook.getLoggedIn()!=null && product.getUserID() != bilbook.getLoggedIn().getID()) {
-            edit.setEnabled(false);
-            sold.setEnabled(false);
-            delete.setEnabled(false);
+        if(bilbook.getLoggedIn()==null || (bilbook.getLoggedIn()!=null && bilbook.getLoggedIn().getID()!=product.getUserID())) {
+            edit.setEnabled(false); 
+            edit.setVisible(false);
+            sold.setEnabled(false); 
+            sold.setVisible(false);
+            delete.setEnabled(false); 
+            delete.setVisible(false);
         }
         return panel;
     }
