@@ -31,6 +31,7 @@ public class ProductPageEditable extends JPanel{
     JTextField textField3;
     JTextField textField4;
     JTextArea descriptionText;
+    GenericMethods.ChangeableImage image;
     JComboBox<String> departments;
     JComboBox<String> codes;
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 26);
@@ -45,7 +46,7 @@ public class ProductPageEditable extends JPanel{
         add(bilbook.createMenuBar(), BorderLayout.NORTH);
         page.setLayout(null);
 
-        GenericMethods.ChangeableImage image = GenericMethods.createChangeableImage();
+        image = GenericMethods.createChangeableImage();
         image.resizeChangeableImage(260);
         image.loadImage(product.getImageFile());
         JPanel featuresPanel = featuresLabel(product);
@@ -201,6 +202,7 @@ public class ProductPageEditable extends JPanel{
                 product.setCourseDepartment((String)departments.getSelectedItem());
                 product.setCourseCode(codes.getSelectedItem().equals("ALL")? 0 :Integer.parseInt((String)codes.getSelectedItem()));
                 product.setDescription(descriptionText.getText());
+                product.setImageFile(image.getImage());
                 bilbook.changePanel(new ProductPage(bilbook, product));
                 DatabaseControl.updateProduct(product);
                 product.notifyFavouritedUsers();
