@@ -181,7 +181,6 @@ public class createAdvert extends JPanel implements ActionListener{
         panel.setBackground(Color.gray);
         panel.setVisible(true);
         panel.add(menuBar);
-        panel.add(warning);
         panel.add(textOfNameOfItem);
         panel.add(textOfAuthorOfItem);
         panel.add(textOfYear);
@@ -247,15 +246,13 @@ public class createAdvert extends JPanel implements ActionListener{
         String price=textOfPrice.getText();
         String year=textOfYear.getText();
         
-        warning.setBounds(100, 650, 100, 20);
-
         if(name==null||author==null||price==null||year==null)
         {
-            warning.setText("Please enter all the information!");
+            PopUpManager.faultyCreation(bilbook, "Please enter all the information!");
         }
         else if(GenericMethods.isInappropriate(name+author))
         {
-            warning.setText("No inappropriate words are allowed!");
+            PopUpManager.faultyCreation(bilbook, "Please do not enter inappropriate words!");
         }
         else
         {
@@ -270,7 +267,7 @@ public class createAdvert extends JPanel implements ActionListener{
             }
             catch(Exception ee)
             {
-                warning.setText("Please enter numbers!");
+                PopUpManager.faultyCreation(bilbook, "Please enter numbers!");
             }   
         }
 

@@ -195,19 +195,34 @@ public class ProductPageEditable extends JPanel{
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                product.setName(textField1.getText());
-                product.setAuthor(textField2.getText());
-                product.setDatePublished(GenericMethods.createDate("1/1/" + textField3.getText()));
-                product.setPrice(Float.parseFloat(textField4.getText()));
-                product.setCourseDepartment((String)departments.getSelectedItem());
-                product.setCourseCode(codes.getSelectedItem().equals("ALL")? 0 :Integer.parseInt((String)codes.getSelectedItem()));
-                product.setDescription(descriptionText.getText());
-                product.setImageFile(image.getImage());
-                product.getUser().setProfilePic(profileImage.getImage());
-                bilbook.changePanel(new ProductPage(bilbook, product));
-                DatabaseControl.updateProduct(product);
-                DatabaseControl.updateUser(product.getUser());
-                product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been changed.");
+                if(GenericMethods.isInappropriate(textField1.getText()+textField2.getText()+descriptionText.getText()))
+                {
+                    PopUpManager.faultyCreation(bilbook, "Please do not enter inappropriate words");
+                }
+                else
+                {
+                    try
+                    {
+                        product.setName(textField1.getText());
+                        product.setAuthor(textField2.getText());
+                        product.setDatePublished(GenericMethods.createDate("1/1/" + textField3.getText()));
+                        product.setPrice(Float.parseFloat(textField4.getText()));
+                        product.setCourseDepartment((String)departments.getSelectedItem());
+                        product.setCourseCode(codes.getSelectedItem().equals("ALL")? 0 :Integer.parseInt((String)codes.getSelectedItem()));
+                        product.setDescription(descriptionText.getText());
+                        product.setImageFile(image.getImage());
+                        product.getUser().setProfilePic(profileImage.getImage());
+                        bilbook.changePanel(new ProductPage(bilbook, product));
+                        DatabaseControl.updateProduct(product);
+                        DatabaseControl.updateUser(product.getUser());
+                        product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been changed.");
+                    }
+                    catch(NumberFormatException ee)
+                    {
+                        PopUpManager.faultyCreation(bilbook, "Please only enter numbers for price and year.");
+                    }
+                }
+
             }
         });
         JButton sold = new JButton("Sold");

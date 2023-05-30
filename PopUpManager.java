@@ -32,6 +32,7 @@ public class PopUpManager extends JFrame
     private static final int DELETE_PROFILE=23;
     private static final int LOG_OUT=15;
     private static final int SEND_EMAIL=16;
+    private static final int FAULTY_CREATION=1;
     
     /**
      * A general constructor for popups. It uses codes to create confirmation popups as well as a popup that takes an email.
@@ -40,7 +41,7 @@ public class PopUpManager extends JFrame
      * @param product this parametre is for the delete product popup. It's the product that the user wants to delete
      * @param user this parametre is for the delete user popup. It's the user that the user wants to delete
      */
-    private PopUpManager(int code, BilBook bilBook, Product product, User user)
+    private PopUpManager(int code, BilBook bilBook, Product product, User user, String str)
     {
         this.bilBook=bilBook;
         setIconImage((new ImageIcon("icon.png")).getImage());
@@ -81,6 +82,18 @@ public class PopUpManager extends JFrame
             generalPanel.add(Box.createRigidArea(new Dimension(1, 50))); generalPanel.add(label); generalPanel.add(panel); generalPanel.add(confirm);
             generalPanel.add(Box.createRigidArea(new Dimension(1, 40)));
         }
+        if(code==FAULTY_CREATION)
+        {
+            setTitle("Problem");
+            generalPanel.setLayout(null);
+            while(str.length()<28)
+            {
+                str=" "+str;
+            }
+            JLabel message=new JLabel(str); message.setBounds(100, 30, 300, 40);
+            notConfirm.setText("OK"); notConfirm.setBounds(160, 70, 70, 30);
+            generalPanel.add(message); generalPanel.add(notConfirm);
+        }
         add(generalPanel);
         setVisible(true);
     }
@@ -92,7 +105,7 @@ public class PopUpManager extends JFrame
      */
     public static void deleteProductPopup(BilBook bilBook, Product product)
     {
-        new PopUpManager(DELETE_BOOK, bilBook, product, null);
+        new PopUpManager(DELETE_BOOK, bilBook, product, null, null);
     }
 
     /**
@@ -102,7 +115,7 @@ public class PopUpManager extends JFrame
      */
     public static void deleteProfilePopup(BilBook bilBook, User user)
     {
-        new PopUpManager(DELETE_PROFILE, bilBook, null, user);
+        new PopUpManager(DELETE_PROFILE, bilBook, null, user, null);
     }
 
     /**
@@ -111,7 +124,7 @@ public class PopUpManager extends JFrame
      */
     public static void logOutPopup(BilBook bilBook)
     {
-        new PopUpManager(LOG_OUT, bilBook, null, null);
+        new PopUpManager(LOG_OUT, bilBook, null, null, null);
     }
 
     /**
@@ -120,7 +133,17 @@ public class PopUpManager extends JFrame
      */
     public static void emailConfirmationPopup(BilBook bilBook)
     {
-        new PopUpManager(SEND_EMAIL, bilBook, null, null);
+        new PopUpManager(SEND_EMAIL, bilBook, null, null, null);
+    }
+
+    /**
+     * Constructs a popup that informs the user that there is a problem with their input.
+     * @param bilBook the bilbook object.
+     * @param message the specific message.
+     */
+    public static void faultyCreation(BilBook bilBook, String message)
+    {
+        new PopUpManager(FAULTY_CREATION, bilBook, null, null, message);
     }
 
     /**
@@ -164,11 +187,11 @@ public class PopUpManager extends JFrame
                 }
                 else if(!codeFromEmail.getText().equals(code))
                 {
-                    codeFromEmail.setText("WRONGCODE");
+                    PopUpManager.faultyCreation(bilBook, "Wrong code.");
                 }
                 else if(!GenericMethods.passwordFieldToString(password).equals(GenericMethods.passwordFieldToString(passwordConfirmation)))
                 {
-                    codeFromEmail.setText("PASSWORDSDIFFERENT");
+                    PopUpManager.faultyCreation(bilBook, "Passwords different.");
                 }
             }
         }

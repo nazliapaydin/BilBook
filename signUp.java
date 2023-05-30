@@ -222,71 +222,35 @@ public class signUp extends JPanel implements ActionListener{
 			 * TO DO 
 			 * IMPLEMENT THESE PASSWORD FIELD TO GENERIC METHODS
 			 */
-			if(name==null)
+			if(name==null||name.equals(""))
 			{
-				labelForInvalidName = new JLabel();
-				labelForInvalidName.setText("Invalid name ");
-				labelForInvalidName.setBounds(660,142,150,20);
-				labelForInvalidName.setVisible(true);
-				panel.add(labelForInvalidName);
-				validation =false;
-
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            if(surname==null)
+            else if(surname==null||surname.equals(""))
 			{
-				labelForInvalidSurname = new JLabel();
-				labelForInvalidSurname.setText("Invalid surname ");
-				labelForInvalidSurname.setBounds(660,190,150,20);
-				labelForInvalidSurname.setVisible(true);
-				panel.add(labelForInvalidSurname);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            if(username==null)
+            else if(username==null||username.equals(""))
 			{
-				labelForInvalidUsername = new JLabel();
-				labelForInvalidUsername.setText("Invalid username ");
-				labelForInvalidUsername.setBounds(660,240,150,20);
-				labelForInvalidUsername.setVisible(true);
-				panel.add(labelForInvalidUsername);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            if(email==null)
+            else if(email==null||email.equals(""))
 			{
-				labelForInvalidEmail = new JLabel();
-				labelForInvalidEmail.setText("Invalid E-Mail ");
-				labelForInvalidEmail.setBounds(660,290,150,20);
-				labelForInvalidEmail.setVisible(true);
-				panel.add(labelForInvalidEmail);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            if(phoneNumber==null)
+            else if(phoneNumber==null||phoneNumber.equals(""))
 			{
-				labelForInvalidPhoneNumber = new JLabel();
-				labelForInvalidPhoneNumber.setText("Invalid Phone number ");
-				labelForInvalidPhoneNumber.setBounds(660,340,150,20);
-				labelForInvalidPhoneNumber.setVisible(true);
-				panel.add(labelForInvalidPhoneNumber);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-			if(password==null)
+			else if(password==null||password.equals(""))
 			{
-				labelForInvalidPassword = new JLabel();
-				labelForInvalidPassword.setText("Invalid password ");
-				labelForInvalidPassword.setBounds(660,390,150,20);
-				labelForInvalidPassword.setVisible(true);
-				panel.add(labelForInvalidPassword);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Enter all of the information.");
 			}
-            if(passwordAgain==null)
+            else if(passwordAgain==null||passwordAgain.equals(""))
 			{
-				labelForInvalidPasswordAgain = new JLabel();
-				labelForInvalidPasswordAgain.setText("Invalid password again ");
-				labelForInvalidPasswordAgain.setBounds(660,440,150,20);
-				labelForInvalidPasswordAgain.setVisible(true);
-				panel.add(labelForInvalidPasswordAgain);
-				validation =false;
+				PopUpManager.faultyCreation(bilbook, "Passwords are different.");
 			}
-			if(validation)
+			else if(validation)
 			{
 				if(bilbook.allowSignUp(username, email))
 				{
@@ -296,12 +260,7 @@ public class signUp extends JPanel implements ActionListener{
 				}
 				else
 				{
-					labelForInvalidPassword = new JLabel();
-					labelForInvalidPassword.setText("There is someone with identical username or email.");
-					labelForInvalidPassword.setBounds(660,390,150,20);
-					labelForInvalidPassword.setVisible(true);
-					panel.add(labelForInvalidPassword);
-					validation =false;
+					PopUpManager.faultyCreation(bilbook, "There is someone with identical username or email.");
 				}
 			}
         }

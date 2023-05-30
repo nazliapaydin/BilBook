@@ -56,7 +56,6 @@ public class logIn extends JPanel implements ActionListener{
 
         buttonForLogIn = new JButton();
 		buttonForLogIn.setBounds(780, 380, 300, 40);
-		buttonForLogIn.addActionListener(this);
 		buttonForLogIn.setText("Log In!");
 		buttonForLogIn.setFocusable(false);
 		buttonForLogIn.setHorizontalTextPosition(JButton.CENTER);
@@ -139,23 +138,14 @@ public class logIn extends JPanel implements ActionListener{
 			boolean validPassword=true;
 			username=textOfUsername.getText();
 			password=GenericMethods.passwordFieldToString(textOfPassword);
-			if(username==null)
+			if(username==null||username.equals(""))
 			{
-				labelForInvalidUsername = new JLabel();
-				labelForInvalidUsername.setText("Invalid username ");
-				labelForInvalidUsername.setBounds(720,420,200,30);
-				labelForInvalidUsername.setVisible(true);
-				panel.add(labelForInvalidUsername);
-				validuUsername=false;
-
+				PopUpManager.faultyCreation(bilbook, "Enter a username.");
+				validPassword=false;
 			}
-			else if(password==null)
+			else if(password==null||password.equals(""))
 			{
-				labelForInvalidPassword = new JLabel();
-				labelForInvalidPassword.setText("Invalid password ");
-				labelForInvalidPassword.setBounds(720,470,200,30);
-				labelForInvalidPassword.setVisible(true);
-				panel.add(labelForInvalidPassword);
+				PopUpManager.faultyCreation(bilbook, "Enter a password.");
 				validPassword=false;
 			}
 			else if(validPassword&&validuUsername)
@@ -166,12 +156,7 @@ public class logIn extends JPanel implements ActionListener{
 				}
 				else
 				{
-					labelForInvalidPassword = new JLabel();
-					labelForInvalidPassword.setText("Invalid password or username");
-					labelForInvalidPassword.setBounds(720,470,200,30);
-					labelForInvalidPassword.setVisible(true);
-					panel.add(labelForInvalidPassword);
-					validPassword=false;
+					PopUpManager.faultyCreation(bilbook, "Invalid password or username.");
 				}
 			}
 		}

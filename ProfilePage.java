@@ -298,16 +298,24 @@ public class ProfilePage extends JPanel
                 @Override
                 public void actionPerformed(ActionEvent e)
                 {
-                    currUser.setUsername(usernameField.getText());
-                    currUser.setName(nameField.getText());
-                    currUser.setSurname(surnameField.getText());
-                    currUser.setPhoneNumber(phoneNumberField.getText());
-                    currUser.setMail(emailField.getText());
-                    currUser.setPassword(GenericMethods.passwordFieldToString(passwordField));
-                    currUser.setProfilePic(profilePic.getImage());
-                    DatabaseControl.updateUser(currUser);
-                    editable = false;
-                    bilBook.refreshPage();
+                    if(GenericMethods.isInappropriate(usernameField.getText()+nameField.getText()+surnameField.getText()+phoneNumberField.getText()))
+                    {
+                        PopUpManager.faultyCreation(bilBook, "Please do not enter inappropriate words");
+                    }
+                    else
+                    {
+                        currUser.setUsername(usernameField.getText());
+                        currUser.setName(nameField.getText());
+                        currUser.setSurname(surnameField.getText());
+                        currUser.setPhoneNumber(phoneNumberField.getText());
+                        currUser.setMail(emailField.getText());
+                        currUser.setPassword(GenericMethods.passwordFieldToString(passwordField));
+                        currUser.setProfilePic(profilePic.getImage());
+                        DatabaseControl.updateUser(currUser);
+                        editable = false;
+                        bilBook.refreshPage();
+                    }
+
                 }
                 
             }

@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -68,6 +69,10 @@ public class BilBook extends JFrame
         repaint();
     }
 
+    /**
+     * A method to refresh the page. Only works for HomePages and ProfilePages.
+     * Author: Ata Uzay Kuzey
+     */
     public void refreshPage()
     {
         if(currentPanel instanceof HomePage)
@@ -270,6 +275,7 @@ public class BilBook extends JFrame
 
     /**
      * A method that logs in the user.
+     * Author: Ata Uzay Kuzey
      * @param user user to be loged in.
      */
     public void logIn(User user)
@@ -589,6 +595,7 @@ public class BilBook extends JFrame
 
     /**
      * A method to determine if the username and email are used by a user.
+     * Author: Ata Uzay Kuzey
      * @param username the username to be checked
      * @param email the email to be checked
      * @return true if there are no users with the same username or email, false otherwise.
@@ -605,18 +612,33 @@ public class BilBook extends JFrame
         return true;
     }
 
+    /**
+     * A method to add a product to bilbook
+     * Author: Ata Uzay Kuzey
+     * @param product the product object to be added.
+     */
     public void addProduct(Product product)
     {
         products.add(product);
         DatabaseControl.addToDataBase(product);
     }
 
+    /**
+     * A method to add a user to bilbook
+     * Author: Ata Uzay Kuzey
+     * @param user the user to be added
+     */
     public void addUser(User user)
     {
         users.add(user);
         DatabaseControl.addToDataBase(user);
     }
 
+    /**
+     * A method to create our logo. The logo returns to homepage when clicked
+     * Author: Ata Uzay Kuzey
+     * @return the logo
+     */
     public JPanel createLogo()
     {
         JPanel logoPanel=new JPanel();
@@ -645,6 +667,12 @@ public class BilBook extends JFrame
         return logoPanel;
     }
 
+    /**
+     * A method that creates a mouselistener that changes the panel when clicked
+     * Author: Ata Uzay Kuzey
+     * @param panel the panel to be changed into
+     * @return the mouselistener
+     */
     public MouseListener panelChanger(JPanel panel)
     {
         return new MouseListener() {
@@ -665,6 +693,15 @@ public class BilBook extends JFrame
             @Override
             public void mouseReleased(MouseEvent e) {}
         };
+    }
+
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        if(e.getID() == WindowEvent.WINDOW_CLOSING)
+        {
+            DatabaseControl.closeConnection();
+            super.processWindowEvent(e);
+        }
     }
 
 
