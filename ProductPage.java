@@ -3,6 +3,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -122,8 +124,21 @@ public class ProductPage extends JPanel{
     }
     
     public JPanel publisherFeatures(Product product) {
-        ImageIcon image = GenericMethods.fileToImage(product.getUser().getImageFile(), 150);
-        JLabel imageLabel = new JLabel(image);
+        JPanel imageLabel =GenericMethods.imageIntoPanel(GenericMethods.fileToImage(product.getUser().getImageFile(), 150));
+        imageLabel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                bilbook.changePanel(new ProfilePage(bilbook, product.getUser()));
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+        });
         JLabel info1 = new JLabel("Phone Number: " + product.getUser().getPhoneNumber());
         info1.setFont(font2);
         JLabel info2 = new JLabel("Email Address: " + product.getUser().getEmail());
@@ -183,3 +198,4 @@ public class ProductPage extends JPanel{
         return panel;
     }
 }
+
