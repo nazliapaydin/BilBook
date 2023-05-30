@@ -1,19 +1,15 @@
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class ProductPage extends JPanel{
@@ -160,8 +156,10 @@ public class ProductPage extends JPanel{
             public void actionPerformed(ActionEvent e) {
                 if(product.isSold() == false) {
                     product.sell();
+                    sold.setText("Unsell");
                 } else {
                     product.reverseSell();
+                    sold.setText("Sold");
                 }
                 DatabaseControl.updateProduct(product);
             }
