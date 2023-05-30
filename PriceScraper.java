@@ -1,163 +1,130 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLEncoder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-/**
- * A class to scrape available online prices / web scraping.
- * Author: Nazlı Apaydın
- */
+import java.util.HashMap;
+import java.util.Map;
+//import java.util.stream.Collectors;
 
-public class PriceScraper {
-    /**
-     * @param bookTitle
-     * @param bookAuthor
-     * @param yearPublished
-     * @return isbn as a String if it is found, null otherwise
-     * @throws IOException
-     */
-    private static String findISBN(String bookTitle, String bookAuthor, int yearPublished) throws IOException 
+public class PriceScraper 
+{
+    public PriceScraper() {}
+
+    public static float priceScrape(String bookTitle, String bookAuthor)
     {
-        String title = bookTitle;
-        String author = bookAuthor;
-        int year = yearPublished;
+        String isbn = PriceScraper.findIsbn(bookTitle,bookAuthor);
+        System.out.println("ISBN: " + isbn);
+        String url = "http://www.amazon.com/gp/search?index=books&linkCode=qs&keywords=" + isbn;
 
-        String encodedTitle = URLEncoder.encode(title, "UTF-8");
-        String encodedAuthor = URLEncoder.encode(author, "UTF-8");
-        String query = "intitle:" + encodedTitle + "+inauthor:" + encodedAuthor + "+year:" + year;
+        // User-agent
+        String userAgent = "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36";
+        int maxRetries = 5;
 
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=" + query);
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) 
+        // Headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept-Language", "en-US");
+        headers.put("Accept-Encoding", "gzip,deflate,sdch");
+
+        // Main call, cookies are fetched inside the method
+        org.jsoup.nodes.Document doc = PriceScraper.goToPageAndGetDocument(url, userAgent, headers, maxRetries);
+        String price = PriceScraper.getText(doc, "span.a-offscreen");
+
+        if(price!=null)
         {
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) 
-            {
-                content.append(inputLine);
-            }
+            price = price.substring(1);
+            float parsedPrice = Float.parseFloat(price);
+            return parsedPrice;
+        }
 
-            JSONObject json = new JSONObject(content.toString());
+        return -1;
 
-            if (json.has("items")) 
-            {
-                JSONArray items = json.getJSONArray("items");
-                if (items.length() > 0) 
-                {
-                    JSONObject volumeInfo = items.getJSONObject(0).getJSONObject("volumeInfo");
-                    if (volumeInfo.has("industryIdentifiers")) 
-                    {
-                        JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
-                        if (industryIdentifiers.length() > 0) 
-                        {
-                            JSONObject identifier = industryIdentifiers.getJSONObject(0);
-                            return identifier.getString("identifier");
-                        }
-                    }
-                }
-            }
-        } 
-        catch (JSONException e) {}
-
-        return null;
     }
 
     /**
      * @param bookTitle
      * @param bookAuthor
-     * @param yearPublished
-     * @return price as a float if successful, -1 if unsuccessful
-     * @throws IOException
+     * @return isbn as a string
      */
-    public static float priceScrape(String bookTitle, String bookAuthor, int yearPublished)
-    {
-        String isbn;
-        try 
-        {
-            isbn = PriceScraper.findISBN(bookTitle, bookAuthor, yearPublished);
-        } catch (IOException e) 
-        {
-            isbn = null;
+    public static String findIsbn(String bookTitle, String bookAuthor) {
+        String url = "https://www.amazon.com/s";
+        String query = String.format("%s %s", bookTitle, bookAuthor);
+
+        // User-agent
+        String userAgent = "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36";
+        int maxRetries = 5;
+
+        // Headers
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Accept-Language", "en-US");
+        headers.put("Accept-Encoding", "gzip,deflate,sdch");
+
+        // Main call, cookies are fetched inside the method
+        Document doc = goToPageAndGetDocument(url + "?k=" + query, userAgent, headers, maxRetries);
+
+        // Retrieve the first product link and extract the ISBN from the URL
+        Element firstProductLink = doc.selectFirst("a.a-link-normal.a-text-normal");
+        if (firstProductLink != null) {
+            String productUrl = firstProductLink.attr("href");
+            String isbn = extractIsbnFromUrl(productUrl);
+            return isbn;
         }
 
-        if (isbn != null) 
-        {
-            String url = "https://www.amazon.com/s?i=stripbooks&rh=p_66%3A" + isbn;
-            try 
-            {
-                Document document = Jsoup.connect(url).timeout(5000).get();
-                Elements priceElements = document.select("span.a-offscreen");
+        return null; // ISBN not found
+    }
 
-                if (!priceElements.isEmpty()) 
-                {
-                    Element priceElement = priceElements.first();
-                    String price = priceElement.text();
-                    float parsedPrice = Float.parseFloat(price.replaceAll("[^\\d.]", ""));
-                    return parsedPrice;
-                } 
-                else 
-                {
-                    return -1;
-                }
-            } 
-            catch (IOException e) 
-            {
-                return -1;
+    /**
+     * Method to be used in findIsbn
+     * @param url
+     * @return 
+     */
+    private static String extractIsbnFromUrl(String url) 
+    {
+        int start = url.indexOf("/dp/") + 4;
+        int end = url.indexOf("/", start);
+        if (end == -1) {
+            return url.substring(start);
+        } else {
+            return url.substring(start, end);
+        }
+    }
+    
+    public static String getText(Element document, String selector) 
+    {
+        Elements elements = document.select(selector);
+        if(elements.size() > 0)
+            return elements.get(0).text().trim();
+        else
+            return "";
+    }
+
+
+    public static Document goToPageAndGetDocument(String link, String userAgent, Map<String, String> headers, int maxRetries ) {
+        int failCounter = 0;
+        if(maxRetries <= 0)
+            maxRetries = 1;
+        while (failCounter < maxRetries) {
+            try{
+				// first request to get initial cookies
+                Connection.Response response = Jsoup.connect(link)
+					.userAgent(userAgent) 
+					.execute();
+				
+				// main request for data
+                return Jsoup.connect(link)
+					.userAgent(userAgent)
+					//.header("Accept-Language", "en-US") 
+					.headers(headers)
+					.cookies(response.cookies())
+					.get();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                failCounter++;
             }
         }
-
-        return -1;
+		// return an empty document, an instance of the type Document. 
+        return Jsoup.parse("<!DOCTYPE html><html><head><title></title></head><body></body></html>");
     }
 }
-
-    
-
-    /**
-     * Finds the price of a book using the Google Books API based on the ISBN.
-     * 
-     * @param isbn the ISBN of the book
-     * @return the price of the book as a float if found, or -1 otherwise
-     * @throws Exception if an error occurs during the API request or JSON parsing
-    public static float findPriceFromAPI(String bookTitle, String bookAuthor, int yearPublished) throws Exception 
-    {
-        if(PriceScraper.findISBN(bookTitle, bookAuthor, yearPublished) != null)
-        {
-            String isbn = PriceScraper.findISBN(bookTitle, bookAuthor, yearPublished);
-            URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) 
-            {
-                content.append(inputLine);
-            }
-            in.close();
-
-            JSONObject json = new JSONObject(content.toString());
-
-            if (json.has("items")) 
-            {
-                JSONArray items = json.getJSONArray("items");
-                if (items.length() > 0) {
-                    JSONObject saleInfo = items.getJSONObject(0).getJSONObject("saleInfo");
-                    if (saleInfo.has("listPrice")) {
-                        JSONObject listPrice = saleInfo.getJSONObject("listPrice");
-                        double price = listPrice.getDouble("amount");
-                        //String currency = listPrice.getString("currencyCode");
-                        return (float) price;
-                    }
-                }
-            }
-        }        
-
-        return -1;
-    }*/
