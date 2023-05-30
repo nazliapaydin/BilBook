@@ -46,8 +46,7 @@ public class ProductPageEditable extends JPanel{
         add(bilbook.createMenuBar(), BorderLayout.NORTH);
         page.setLayout(null);
 
-        image = GenericMethods.createChangeableImage();
-        image.resizeChangeableImage(260);
+        image = GenericMethods.createChangeableImage(260);
         image.loadImage(product.getImageFile());
         JPanel featuresPanel = featuresLabel(product);
         JPanel publisherFeatures = publisherFeatures(product);
