@@ -1,4 +1,3 @@
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,13 +44,14 @@ public class BilBook extends JFrame
     {
         DatabaseControl.setup();
         datasOfLectures.getDepartments();
+        products=DatabaseControl.getProducts();
+        users=DatabaseControl.getUsers();
         setSize(1619, 906);
         setTitle("BilBook");
         setIconImage((new ImageIcon("icon.png")).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        products=DatabaseControl.getProducts();
-        users=DatabaseControl.getUsers();
         changePanel(new HomePage(this));
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -103,9 +103,9 @@ public class BilBook extends JFrame
         {
             //log in button
             JButton logInButton = new JButton("Log In");
-            logInButton.setFocusable(false);
             logInButton.setBackground(GenericMethods.GREAT_COLOR);
             logInButton.setMaximumSize(new Dimension(200, 100));
+            logInButton.setFocusable(false);
             class LogInListener implements ActionListener
             {
                 @Override
@@ -120,9 +120,9 @@ public class BilBook extends JFrame
 
             //sign up button
             JButton signUpButton = new JButton("Sign Up");
-            signUpButton.setFocusable(false);
             signUpButton.setBackground(GenericMethods.GREAT_COLOR);
             signUpButton.setMaximumSize(new Dimension(200, 100));
+            signUpButton.setFocusable(false);
             class SignUpListener implements ActionListener
             {
                 @Override
@@ -139,9 +139,9 @@ public class BilBook extends JFrame
         {
             //view profile button
             JButton viewProfile = new JButton("View Profile");
-            viewProfile.setFocusable(false);;
             viewProfile.setBackground(GenericMethods.GREAT_COLOR);
             viewProfile.setMaximumSize(new Dimension(200, 100));
+            viewProfile.setFocusable(false);
             class ViewProfileListener implements ActionListener
             {
                 @Override
@@ -156,9 +156,9 @@ public class BilBook extends JFrame
 
             //create advert button
             JButton createAdvertButton = new JButton("Create Advert");
-            createAdvertButton.setFocusable(false);
             createAdvertButton.setBackground(GenericMethods.GREAT_COLOR);
             createAdvertButton.setMaximumSize(new Dimension(200, 100));
+            createAdvertButton.setFocusable(false);
             class CreateAdvertButtonListener implements ActionListener
             {
                 @Override
@@ -173,9 +173,9 @@ public class BilBook extends JFrame
 
             //log out button
             JButton logOutButton = new JButton("Log Out");
-            logOutButton.setFocusable(false);
             logOutButton.setBackground(GenericMethods.GREAT_COLOR);
             logOutButton.setMaximumSize(new Dimension(200, 100));
+            logOutButton.setFocusable(false);
             class LogOutButtonListener implements ActionListener
             {
                 @Override
@@ -308,9 +308,9 @@ public class BilBook extends JFrame
             books=new JCheckBox("Books"); notes=new JCheckBox("Notes"); books.setSelected(true); notes.setSelected(true);
             departments=new JComboBox<>(datasOfLectures.lectures); codes=new JComboBox<>(datasOfLectures.getCodes(0)); codes.setEnabled(false);departments.addItemListener(new DepartmentsAndCodes());
             departments.setSelectedIndex(0); sortMethods=new JComboBox<>(sorts); searchBar=new JTextField();add(Box.createRigidArea(new Dimension(10, 10)));
-            add(books); add(Box.createRigidArea(new Dimension(20, 10)));add(notes); add(Box.createHorizontalGlue());
-            add(departments); add(Box.createRigidArea(new Dimension(20, 10))); add(codes); add(Box.createHorizontalGlue());
-            add(sortMethods); add(Box.createHorizontalGlue()); add(searchBar); 
+            add(books); add(Box.createRigidArea(new Dimension(20, 10)));add(notes); add(Box.createHorizontalGlue());add(Box.createRigidArea(new Dimension(20, 10)));
+            add(departments); add(Box.createRigidArea(new Dimension(20, 10))); add(codes); add(Box.createRigidArea(new Dimension(20, 10)));add(Box.createHorizontalGlue());
+            add(sortMethods); add(Box.createHorizontalGlue());add(Box.createRigidArea(new Dimension(20, 10))); add(searchBar); 
             if(isProfilePage)
             {
                 onlyAvailables=new JCheckBox("Only Availables");
@@ -330,7 +330,7 @@ public class BilBook extends JFrame
             books.addItemListener(new SortChange()); notes.addItemListener(new SortChange()); departments.addItemListener(new SortChange());
             codes.addItemListener(new SortChange()); sortMethods.addItemListener(new SortChange()); 
             searchBar.getDocument().addDocumentListener(new TextChange());
-            setMaximumSize(new Dimension(1600, 200));
+            setMaximumSize(new Dimension(1600, 20));
         }
 
         public boolean allowBooks()
@@ -669,7 +669,7 @@ public class BilBook extends JFrame
 
 
     public static void main(String[] args) {
-        BilBook bilBook=new BilBook();
+        BilBook bilBook=new BilBook(); 
         bilBook.setVisible(true);
     }
 }

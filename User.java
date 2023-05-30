@@ -1,3 +1,5 @@
+
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -44,6 +46,8 @@ public class User
         this.phoneNumber = phoneNumber;
         this.mail = mail;
         this.profilePic = image;
+        products=new ArrayList<>();
+
 
         if(image==null)
         {
@@ -190,6 +194,7 @@ public class User
     {
         this.products = products;
     }
+
 
     public void addProduct(Product product)
     {
