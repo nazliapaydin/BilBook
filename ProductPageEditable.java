@@ -72,9 +72,16 @@ public class ProductPageEditable extends JPanel{
         sellerPrice.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         seller.add(sellerText);
         seller.add(sellerPrice);
-        Border sellerBorder = BorderFactory.createTitledBorder("Cheap");
+        String borderTitle = "Cheap";
+        if(!product.isBook()) {
+            borderTitle = "Hopefully Cheap";
+        }
+        Border sellerBorder = BorderFactory.createTitledBorder(borderTitle);
         seller.setBorder(sellerBorder);
         JPanel online = new JPanel(new GridLayout(2, 1));
+        if(!product.isBook()) {
+            online.setVisible(false);
+        }
         JLabel onlineText = new JLabel("Online Price");
         JLabel onlinePrice = new JLabel(product.getOnlinePrice() + "$");
         onlineText.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));

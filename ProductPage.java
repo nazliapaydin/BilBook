@@ -64,9 +64,16 @@ public class ProductPage extends JPanel{
         sellerPrice.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
         seller.add(sellerText);
         seller.add(sellerPrice);
-        Border sellerBorder = BorderFactory.createTitledBorder("Cheap");
+        String borderTitle = "Cheap";
+        if(!product.isBook()) {
+            borderTitle = "Hopefully Cheap";
+        }
+        Border sellerBorder = BorderFactory.createTitledBorder(borderTitle);
         seller.setBorder(sellerBorder);
         JPanel online = new JPanel(new GridLayout(2, 1));
+        if(!product.isBook()) {
+            online.setVisible(false);
+        }
         JLabel onlineText = new JLabel("Online Price");
         JLabel onlinePrice = new JLabel(product.getOnlinePrice() + "$");
         onlineText.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
@@ -77,6 +84,7 @@ public class ProductPage extends JPanel{
         online.setBorder(onlineBorder);
         prices.add(seller);
         prices.add(online);
+
 
         ImageIcon starImageOff = GenericMethods.NOT_FAVOURITE_STAR;
         ImageIcon starImageOn = GenericMethods.FAVOURITE_STAR;
@@ -110,7 +118,12 @@ public class ProductPage extends JPanel{
         label3.setFont(font);
         JLabel label4 = new JLabel("Price: " + (int)product.getPrice() + "₺");
         label4.setFont(font);
-        JLabel label5 = new JLabel("Lecture: " + product.getCourseDepartment() + " " + product.getCourseCode());
+        String department = product.getCourseDepartment();
+        String code = product.getCourseCode() + "";
+        if(department.equals("ALL") || code.equals("0")) {
+            code = "";
+        }
+        JLabel label5 = new JLabel("Lecture: " + department + " " + code);
         label5.setFont(font);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5,1));
