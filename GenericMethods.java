@@ -451,9 +451,9 @@ public class GenericMethods
      * A method that creates a ChangeableImage object
      * @return the ChangeableImage
      */
-    public static ChangeableImage createChangeableImage(int size)
+    public static ChangeableImage createChangeableImage()
     {
-        return new ChangeableImage(size);
+        return new ChangeableImage();
     }
 
     /**
@@ -495,6 +495,10 @@ public class GenericMethods
         public File getImage()
         {
             return file;
+        }
+
+        public void resizeChangeableImage(int size) {
+            this.size = size;
         }
 
         /**
