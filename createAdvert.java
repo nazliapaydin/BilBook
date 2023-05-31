@@ -261,9 +261,10 @@ public class createAdvert extends JPanel implements ActionListener{
                 float pricef=Float.parseFloat(price);
                 int yeari=Integer.parseInt(year);
                 bilbook.getLoggedIn().changeTotalItems(1);
-                Product product=new Product(name, author, GenericMethods.createDate(1, 1, yeari), GenericMethods.getCurrentDate(), pricef, (String)departmentsList.getSelectedItem(), Integer.parseInt((String)codesList.getSelectedItem()), bilbook.getLoggedIn(), radioButtonBook.isSelected() ? true: false, false, buttonForImage.getImage());
+                Product product=new Product(name, author, GenericMethods.createDate(1, 1, yeari), GenericMethods.getCurrentDate(), pricef, (String)departmentsList.getSelectedItem(), codesList.getSelectedItem().equals("ALL")? 0:Integer.parseInt((String)codesList.getSelectedItem()), bilbook.getLoggedIn(), radioButtonBook.isSelected() ? true: false, false, buttonForImage.getImage());
                 bilbook.addProduct(product);
                 bilbook.changePanel(new ProductPage(bilbook, product));
+                DatabaseControl.updateUser(bilbook.getLoggedIn());;
             }
             catch(Exception ee)
             {

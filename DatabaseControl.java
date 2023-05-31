@@ -171,7 +171,10 @@ public class DatabaseControl
                 Files.copy(imageStream, imagePath, StandardCopyOption.REPLACE_EXISTING);
                 File image = imagePath.toFile();
                 current.setImageFile(image);
-                current.updateOnlinePrice();
+                if(current.isBook())
+                {
+                    current.updateOnlinePrice();
+                }
                 products.add(current);
             }
             resultSet.close();

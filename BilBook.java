@@ -63,6 +63,10 @@ public class BilBook extends JFrame
     public void changePanel(JPanel panel)
     {
         getContentPane().removeAll();
+        if(currentPanel!=null)
+        {
+            currentPanel.removeAll();
+        }
         currentPanel=panel;
         getContentPane().add(currentPanel);
         revalidate();
@@ -531,7 +535,9 @@ public class BilBook extends JFrame
     {
         products.remove(product);
         loggedInUser.removeProduct(product);
+        product.getUser().changeTotalItems(-1);
         DatabaseControl.removeProduct(product);
+        DatabaseControl.updateUser(product.getUser());;
         product.notifyFavouritedUsers("One of the products you favourited, "+product.getName()+", has been deleted.");
         if(currentPanel instanceof ProductPage)
         {
@@ -620,6 +626,7 @@ public class BilBook extends JFrame
     public void addProduct(Product product)
     {
         products.add(product);
+        product.getUser().addProduct(product);
         DatabaseControl.addToDataBase(product);
     }
 

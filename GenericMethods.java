@@ -125,7 +125,7 @@ public class GenericMethods
             Image temp=icon.getImage();
             if(icon.getIconWidth()>icon.getIconHeight())
             {
-                temp=temp.getScaledInstance(size, size*icon.getIconHeight()/icon.getIconWidth(), Image.SCALE_SMOOTH);
+                temp=temp.getScaledInstance(size, size*icon.getIconHeight()/icon.getIconWidth(), Image.SCALE_FAST);
                 BufferedImage image=new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
                 Graphics g=image.getGraphics(); g.setColor(new Color(238,238,238));
                 g.fillRect(0, 0, size, size);

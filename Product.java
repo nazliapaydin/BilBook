@@ -207,8 +207,8 @@ public class Product implements Comparable<Product>
         return name;
     }
 
-    public double getOnlinePrice() {
-        return onlinePrice;
+    public float getOnlinePrice() {
+        return Math.round(onlinePrice*100)/100f;
     }
 
     public float getPrice() {

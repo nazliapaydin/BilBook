@@ -110,9 +110,9 @@ public class ProductPage extends JPanel{
 
     public JPanel featuresLabel(Product product) {
         
-        JLabel label1 = new JLabel("Name of the book: " + product.getName());
+        JLabel label1 = new JLabel("Name of the "+(product.isBook() ? "book": "notes")+": " + product.getName());
         label1.setFont(font);
-        JLabel label2 = new JLabel("Author of the book: " + product.getAuthor());
+        JLabel label2 = new JLabel("Author of the "+(product.isBook() ? "book": "notes")+": " + product.getAuthor());
         label2.setFont(font);
         JLabel label3 = product.isBook() ? new JLabel("Year published: " + product.getDatePublished().getYear()) : new JLabel("Year written: " + product.getDatePublished().getYear());
         label3.setFont(font);

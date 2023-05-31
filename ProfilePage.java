@@ -114,6 +114,10 @@ public class ProfilePage extends JPanel
             
         }
         deleteProfile.addActionListener(new deleteProfileListener());
+        if(!bilBook.getLoggedIn().equals(currUser))
+        {
+            deleteProfile.setVisible(false);
+        }
 
         return deleteProfile;
     }
@@ -137,7 +141,10 @@ public class ProfilePage extends JPanel
         }
         
         editProfile.addActionListener(new editProfileListener());
-
+        if(!bilBook.getLoggedIn().equals(currUser))
+        {
+            editProfile.setVisible(false);
+        }
         return editProfile;
     }
 
@@ -258,6 +265,7 @@ public class ProfilePage extends JPanel
         else
         {
             GenericMethods.ChangeableImage profilePic = GenericMethods.createChangeableImage(200);
+            profilePic.loadImage(currUser.getImageFile());
             profilePic.setBounds(90, 15, 200, 200);
             page.add(profilePic);
             credentials.setLayout(new GridLayout(8,2));

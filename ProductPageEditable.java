@@ -115,9 +115,9 @@ public class ProductPageEditable extends JPanel{
     }
 
     public JPanel featuresLabel(Product product) {
-        JLabel label1 = new JLabel("Name of the book: ");
+        JLabel label1 = new JLabel("Name of the "+(product.isBook() ? "book": "notes")+": ");
         label1.setFont(font);
-        JLabel label2 = new JLabel("Author of the book: ");
+        JLabel label2 = new JLabel("Author of the "+(product.isBook() ? "book": "notes")+": ");
         label2.setFont(font);
         JLabel label3 = product.isBook() ? new JLabel("Year published: ") : new JLabel("Year written: ");
         label3.setFont(font);
@@ -134,7 +134,7 @@ public class ProductPageEditable extends JPanel{
         textField4 = new JTextField(product.getPrice()+"", 10);
         textField4.setFont(font3);
         departments=new JComboBox<>(datasOfLectures.lectures); departments.setSelectedItem(product.getCourseDepartment());
-        codes=new JComboBox<>(datasOfLectures.getCodes(departments.getSelectedIndex())); codes.setSelectedItem(product.getCourseCode());
+        codes=new JComboBox<>(datasOfLectures.getCodes(departments.getSelectedIndex())); 
         departments.addItemListener(new  ItemListener()
         {
             @Override
@@ -152,7 +152,7 @@ public class ProductPageEditable extends JPanel{
                 }
             }
         });
-
+        codes.setSelectedItem(product.getCourseCode()+"");
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5,2));
         panel.add(label1);
