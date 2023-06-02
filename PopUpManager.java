@@ -253,6 +253,7 @@ public class PopUpManager extends JFrame
         @Override
         public void actionPerformed(ActionEvent e) {
             bilBook.removeUser(user);
+            bilBook.changePanel(new HomePage(bilBook));
             dispose();
         }
     }
@@ -269,6 +270,7 @@ public class PopUpManager extends JFrame
         @Override
         public void actionPerformed(ActionEvent e) {
             bilBook.removeProduct(product);
+            bilBook.changePanel(new HomePage(bilBook));
             dispose();
         }
 

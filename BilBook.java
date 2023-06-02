@@ -23,6 +23,9 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+/**
+ * A class that controls everything in our program. It also acts as a JFrame.
+ */
 public class BilBook extends JFrame
 {
     private static String[] sorts=new String[]{"Price ▲", "Price ▼", "Date ▲", "Date ▼", "Profit %", "Random"};

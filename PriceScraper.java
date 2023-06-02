@@ -15,7 +15,6 @@ public class PriceScraper
     public static float priceScrape(String bookTitle, String bookAuthor)
     {
         String isbn = PriceScraper.findIsbn(bookTitle,bookAuthor);
-        System.out.println("ISBN: " + isbn);
         String url = "http://www.amazon.com/gp/search?index=books&linkCode=qs&keywords=" + isbn;
 
         // User-agent

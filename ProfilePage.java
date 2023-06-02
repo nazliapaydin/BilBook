@@ -215,11 +215,7 @@ public class ProfilePage extends JPanel
         scrollPane.removeAll();
         panel.setMinimumSize(new Dimension(1500, 600));
         scrollPane.add(panel);
-
-        for(JPanel current: panels)
-        {
-            current.updateUI();
-        }
+        panel.updateUI();      
     }
 
     

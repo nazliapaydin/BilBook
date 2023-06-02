@@ -58,10 +58,7 @@ public class HomePage extends JPanel{
         scrollPane.validate();
         panel.setMinimumSize(new Dimension(1500, 600));
         scrollPane.add(panel);
-        for(JPanel current: panels)
-        {
-            current.updateUI();
-        }
+        panel.updateUI();
     }
 
 }

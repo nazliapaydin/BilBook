@@ -127,7 +127,7 @@ public class Product implements Comparable<Product>
     }
 
     public void setImageFile(File image) {
-        this.image = image;
+        this.image = image==null ? (isBook ? new File("default_book.png"): new File("default_notes.png")): image;
     }
 
     public void setPrice(float price) {
@@ -299,7 +299,7 @@ public class Product implements Comparable<Product>
         if(!showNotes&&!isBook){return false;}
         if(!courseDepartment.equals("ALL")&&!courseDepartment.equals(this.courseDepartment)){return false;}
         if(courseCode!=0&&courseCode!=this.courseCode&&!courseDepartment.equals("ALL")){return false;}
-        if(GenericMethods.stringSimilarity(this.name, searchBar)<0.75){return false;}
+        if(!searchBar.equals("")&&!searchBar.equals(" ")&&GenericMethods.stringSimilarity(this.name, searchBar)<0.75){return false;}
         if(showOnlyFavourites&&!favouritedBy.contains(loggedInUser)){return false;}
         if(dontShowSold&&isSold){return false;}
         return true;
