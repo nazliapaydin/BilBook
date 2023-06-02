@@ -30,7 +30,7 @@ public class PriceScraper
         org.jsoup.nodes.Document doc = PriceScraper.goToPageAndGetDocument(url, userAgent, headers, maxRetries);
         String price = PriceScraper.getText(doc, "span.a-offscreen");
 
-        if(price!=null)
+        if(price!=null&&price.length()>=1)
         {
             price = price.substring(1);
             float parsedPrice = Float.parseFloat(price);
