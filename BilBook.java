@@ -710,8 +710,8 @@ public class BilBook extends JFrame
         if(e.getID() == WindowEvent.WINDOW_CLOSING)
         {
             DatabaseControl.closeConnection();
-            super.processWindowEvent(e);
         }
+        super.processWindowEvent(e);
     }
 
 
