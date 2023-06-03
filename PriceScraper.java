@@ -1,13 +1,17 @@
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.HashMap;
-import java.util.Map;
-//import java.util.stream.Collectors;
-
+/**
+ * A class that has a scraper method to scrape prices from Amazon with ısbn along with helper methods.
+ * Author: Nazlı Apaydın
+ */
 public class PriceScraper 
 {
     public PriceScraper() {}
@@ -46,15 +50,14 @@ public class PriceScraper
      * @param bookAuthor
      * @return isbn as a string
      */
-    public static String findIsbn(String bookTitle, String bookAuthor) {
+    public static String findIsbn(String bookTitle, String bookAuthor)
+    {
         String url = "https://www.amazon.com/s";
         String query = String.format("%s %s", bookTitle, bookAuthor);
 
-        // User-agent
         String userAgent = "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36";
         int maxRetries = 5;
 
-        // Headers
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept-Language", "en-US");
         headers.put("Accept-Encoding", "gzip,deflate,sdch");
@@ -64,7 +67,8 @@ public class PriceScraper
 
         // Retrieve the first product link and extract the ISBN from the URL
         Element firstProductLink = doc.selectFirst("a.a-link-normal.a-text-normal");
-        if (firstProductLink != null) {
+        if (firstProductLink != null) 
+        {
             String productUrl = firstProductLink.attr("href");
             String isbn = extractIsbnFromUrl(productUrl);
             return isbn;
@@ -82,9 +86,11 @@ public class PriceScraper
     {
         int start = url.indexOf("/dp/") + 4;
         int end = url.indexOf("/", start);
-        if (end == -1) {
+        if (end == -1)
+        {
             return url.substring(start);
-        } else {
+        } else
+        {
             return url.substring(start, end);
         }
     }
@@ -99,11 +105,13 @@ public class PriceScraper
     }
 
 
-    public static Document goToPageAndGetDocument(String link, String userAgent, Map<String, String> headers, int maxRetries ) {
-        int failCounter = 0;
+    public static Document goToPageAndGetDocument(String link, String userAgent, Map<String, String> headers, int maxRetries )
+    {
+        int fail = 0;
         if(maxRetries <= 0)
             maxRetries = 1;
-        while (failCounter < maxRetries) {
+        while (fail < maxRetries)
+        {
             try{
 				// first request to get initial cookies
                 Connection.Response response = Jsoup.connect(link)
@@ -111,16 +119,11 @@ public class PriceScraper
 					.execute();
 				
 				// main request for data
-                return Jsoup.connect(link)
-					.userAgent(userAgent)
-					//.header("Accept-Language", "en-US") 
-					.headers(headers)
-					.cookies(response.cookies())
-					.get();
+                return Jsoup.connect(link).userAgent(userAgent).headers(headers).cookies(response.cookies()).get();
             }
             catch (Exception e) {
                 e.printStackTrace();
-                failCounter++;
+                fail++;
             }
         }
 		// return an empty document, an instance of the type Document. 
