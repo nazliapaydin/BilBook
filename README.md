@@ -4,3 +4,5 @@ In order for BilBook to work, there needs to be a local MySQL database, and ther
 "mail.jar" and "activation.jar" is needed to send emails.
 
 "jsoup-1.16.1.jar" and "org.json.jar" is needed to pricescrape.
+
+The main method of BilBook is in the BilBook.java class.
